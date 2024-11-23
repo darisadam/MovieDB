@@ -13,7 +13,7 @@ class MovieTabBar: UITabBarController {
         super.viewDidLoad()
         
         setupTabs()
-        tabBar.barTintColor = UIColor(hexString: "#202123")
+        tabBar.backgroundColor = UIColor(hexString: "#202123")
         tabBar.tintColor = UIColor(hexString: "#FFD130")
         tabBar.unselectedItemTintColor = UIColor(hexString: "#FFFFFF")
     }
