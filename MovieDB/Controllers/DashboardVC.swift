@@ -42,7 +42,7 @@ class DashboardViewController: UIViewController {
     let movieList: UIView = {
         let view = UIView()
         view.heightAnchor.constraint(equalToConstant: 500).isActive = true
-        setupViews()
+//        setupViews()
         return view
     }()
     
@@ -50,8 +50,8 @@ class DashboardViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor(hexString: "#25272A")
-//        setupViews()
-        setupScrollView()
+        setupViews()
+//        setupScrollView()
     }
     
 //    override func viewDidAppear(_ animated: Bool) {
