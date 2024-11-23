@@ -1,5 +1,5 @@
 //
-//  Movie.swift
+//  MovieData.swift
 //  MovieDB
 //
 //  Created by Adam Daris Ryadhi on 22/11/24.
@@ -7,7 +7,7 @@
 
 import Foundation
 
-struct Movie: Identifiable, Decodable {
+struct MovieData: Identifiable, Decodable {
     let id: Int
     let title: String
     let backdrop_path: String
@@ -16,6 +16,9 @@ struct Movie: Identifiable, Decodable {
     let overview: String
     let isFavorite: Bool
     let runtime: Int
+    let homepage: String
+    let belongs_to_collection: BelongsToCollection
+    let genres: [Genres]
 }
 
 struct BelongsToCollection: Identifiable, Decodable {
