@@ -7,12 +7,14 @@
 
 import UIKit
 
-class SearchViewController: UIViewController {
+class PopularViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor(hexString: "#25272A")
+        
+        print("popular")
     }
     
     

@@ -13,6 +13,8 @@ class FavoriteViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor(hexString: "#25272A")
+        
+        print("favorite")
     }
     
     

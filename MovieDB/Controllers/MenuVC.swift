@@ -13,6 +13,8 @@ class MenuViewController: UIViewController {
         super.viewDidLoad()
         
         view.backgroundColor = UIColor(hexString: "#25272A")
+        
+        print("menu")
     }
     
     

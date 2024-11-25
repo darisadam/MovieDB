@@ -13,27 +13,25 @@ class MovieTabBar: UITabBarController {
         super.viewDidLoad()
         
         setupTabs()
-        tabBar.backgroundColor = UIColor(hexString: "#202123")
-        tabBar.tintColor = UIColor(hexString: "#FFD130")
-        tabBar.unselectedItemTintColor = UIColor(hexString: "#FFFFFF")
     }
     
     private func setupTabs() {
-        let dashboard = createNav(image: UIImage(systemName: "house"), vc: DashboardViewController())
-        
-        let search = createNav(image: UIImage(systemName: "magnifyingglass"), vc: SearchViewController())
-        
+        let home = createNav(image: UIImage(systemName: "house"), vc: HomeViewController())
+        let popular = createNav(image: UIImage(systemName: "magnifyingglass"), vc: PopularViewController())
         let favorite = createNav(image: UIImage(systemName: "heart"), vc: FavoriteViewController())
-        
         let menu = createNav(image: UIImage(systemName: "square.grid.2x2"), vc: MenuViewController())
         
-        setViewControllers([dashboard, search, favorite, menu], animated: true)
+        setViewControllers([home, popular, favorite, menu], animated: true)
     }
     
     private func createNav(image: UIImage?, vc: UIViewController) -> UINavigationController {
         
         let nav = UINavigationController(rootViewController: vc)
         nav.tabBarItem.image = image
+        
+        tabBar.backgroundColor = UIColor(hexString: "#202123")
+        tabBar.tintColor = UIColor(hexString: "#FFD130")
+        tabBar.unselectedItemTintColor = UIColor(hexString: "#FFFFFF")
         
         return nav
     }

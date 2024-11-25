@@ -1,5 +1,5 @@
 //
-//  DashboardViewController.swift
+//  HomeViewController.swift
 //  MovieDB
 //
 //  Created by Adam Daris Ryadhi on 22/11/24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class DashboardViewController: UIViewController {
+class HomeViewController: UIViewController {
     
     let screenWidth = UIScreen.main.bounds.size.width
     let screenHeight = UIScreen.main.bounds.size.height
@@ -52,25 +52,27 @@ class DashboardViewController: UIViewController {
         view.backgroundColor = UIColor(hexString: "#25272A")
         setupViews()
 //        setupScrollView()
+        
+        print("home")
     }
     
-//    override func viewDidAppear(_ animated: Bool) {
-//        super.viewDidAppear(animated)
-//        let indexPath = IndexPath(item: 1, section: 0)
-//        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
-//        
-//        layout.currentPage = indexPath.item
-//        layout.previousOffset = layout.updateOffset(collectionView)
-//        
-//        if let cell = collectionView.cellForItem(at: indexPath) {
-//            transformCell(cell)
-//        }
-//    }
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        let indexPath = IndexPath(item: 1, section: 0)
+        collectionView.scrollToItem(at: indexPath, at: .centeredHorizontally, animated: true)
+        
+        layout.currentPage = indexPath.item
+        layout.previousOffset = layout.updateOffset(collectionView)
+        
+        if let cell = collectionView.cellForItem(at: indexPath) {
+            transformCell(cell)
+        }
+    }
 }
 
 //MARK: - Setup
 
-extension DashboardViewController {
+extension HomeViewController {
     
     private func setupViews() {
         collectionView.backgroundColor = .clear
@@ -102,7 +104,7 @@ extension DashboardViewController {
 
 //MARK: - ScrollView
 
-extension DashboardViewController {
+extension HomeViewController {
     
     func setupScrollView() {
         view.addSubview(scrollView)
@@ -126,7 +128,7 @@ extension DashboardViewController {
 
 //MARK: - Collection View Data Source
 
-extension DashboardViewController: UICollectionViewDataSource {
+extension HomeViewController: UICollectionViewDataSource {
    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return 10
@@ -141,7 +143,7 @@ extension DashboardViewController: UICollectionViewDataSource {
 
 //MARK: - Collection View Delegate
 
-extension DashboardViewController: UICollectionViewDelegate {
+extension HomeViewController: UICollectionViewDelegate {
     
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         if indexPath.item == layout.currentPage {
@@ -158,7 +160,7 @@ extension DashboardViewController: UICollectionViewDelegate {
 
 //MARK: - Collection View Flow Layout
 
-extension DashboardViewController: UICollectionViewDelegateFlowLayout {
+extension HomeViewController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
         return CGSize(width: itemW, height: itemH)
@@ -167,7 +169,7 @@ extension DashboardViewController: UICollectionViewDelegateFlowLayout {
 
 //MARK: - Scroll View Delegate
 
-extension DashboardViewController {
+extension HomeViewController {
     
     func scrollViewDidEndScrollingAnimation(_ scrollView: UIScrollView) {
         
