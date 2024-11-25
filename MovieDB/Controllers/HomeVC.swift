@@ -32,40 +32,14 @@ class HomeViewController: UIViewController {
         print("home")
     }
     
-    private func configureNavbar() {
-        let movieText = NSAttributedString(
-            string: "Movie",
-            attributes: [
-                .foregroundColor: UIColor(hexString: "FFFFFF"),
-                .font: UIFont.TextStyle.title2,
-                .font: UIFont.Weight.bold,
-            ]
-        )
-        
-        let dbText = NSAttributedString(
-            string: "DB",
-            attributes: [
-                .foregroundColor: UIColor(hexString: "FFFFFF"),
-                .font: UIFont.TextStyle.title2,
-                .font: UIFont.Weight.bold,
-            ]
-        )
-        
-        let combinedText = NSMutableAttributedString()
-        combinedText.append(movieText)
-        combinedText.append(dbText)
-        
-        let titleLabel = UILabel()
-        titleLabel.attributedText = combinedText
-        navigationItem.titleView = titleLabel
-    }
-    
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
         homeMovieTable.frame = view.bounds
     }
 
 }
+
+//MARK: - Movie List Table View
 
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
@@ -94,4 +68,53 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return 40
     }
     
+}
+
+//MARK: - Home Navigation Bar
+
+extension HomeViewController {
+    private func configureNavbar() {
+        // Configure left side title
+        let movieText = NSAttributedString(
+            string: "Movie",
+            attributes: [
+                .foregroundColor: UIColor(hexString: "FFFFFF"),
+                .font: UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .title2).pointSize, weight: .bold)
+            ]
+        )
+        
+        let dbText = NSAttributedString(
+            string: "DB",
+            attributes: [
+                .foregroundColor: UIColor(hexString: "#FFD130"),
+                .font: UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .title2).pointSize, weight: .bold)
+            ]
+        )
+        
+        let combinedText = NSMutableAttributedString()
+        combinedText.append(movieText)
+        combinedText.append(dbText)
+        
+        let titleLabel = UILabel()
+        titleLabel.attributedText = combinedText
+        
+        // Create left bar button item with the custom title
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        
+        // Configure right side notification button
+        let bellImage = UIImage(systemName: "bell")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        let bellButton = UIBarButtonItem(
+            image: bellImage,
+            style: .plain,
+            target: self,
+            action: #selector(bellButtonTapped)
+        )
+        
+        navigationItem.rightBarButtonItem = bellButton
+    }
+    
+    @objc private func bellButtonTapped() {
+        // Handle bell button tap
+        print("Bell button tapped")
+    }
 }
