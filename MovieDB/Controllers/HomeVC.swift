@@ -27,7 +27,7 @@ class HomeViewController: UIViewController {
         
         configureNavbar()
         
-        homeMovieTable.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 450))
+        homeMovieTable.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 275))
         
         print("home")
     }
@@ -68,6 +68,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return 40
     }
     
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        let defaultOffset = view.safeAreaInsets.top
+        let offset = scrollView.contentOffset.y + defaultOffset
+        
+        navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
+    }
+    
 }
 
 //MARK: - Home Navigation Bar
@@ -98,10 +105,8 @@ extension HomeViewController {
         let titleLabel = UILabel()
         titleLabel.attributedText = combinedText
         
-        // Create left bar button item with the custom title
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
         
-        // Configure right side notification button
         let bellImage = UIImage(systemName: "bell")?.withTintColor(.white, renderingMode: .alwaysOriginal)
         let bellButton = UIBarButtonItem(
             image: bellImage,
@@ -115,6 +120,6 @@ extension HomeViewController {
     
     @objc private func bellButtonTapped() {
         // Handle bell button tap
-        print("Bell button tapped")
+        print("Notification button tapped")
     }
 }
