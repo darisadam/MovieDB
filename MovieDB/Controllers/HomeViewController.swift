@@ -15,6 +15,10 @@ class HomeViewController: UIViewController {
     let screenWidth = UIScreen.main.bounds.size.width
     let screenHeight = UIScreen.main.bounds.size.height
     
+    let section0Images = ["captainamerica", "captainamerica", "captainamerica"]
+    let section1Images = ["split", "rover", "greenbook", "split", "rover", "greenbook"]
+    let section2Images = ["cars", "murdermystery", "avengers", "cars", "murdermystery", "avengers"]
+    
     let collectionView: UICollectionView = {
         
         let layout = UICollectionViewCompositionalLayout { (sectionNumber, env) -> NSCollectionLayoutSection in
@@ -22,10 +26,9 @@ class HomeViewController: UIViewController {
             if sectionNumber == 0 {
                 
                 let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-//                item.contentInsets.top = additionalSafeAreaInsets.top
                 item.contentInsets.bottom = 30
                 
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(261)), subitems: [item])
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(325)), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .paging
                 
@@ -38,7 +41,7 @@ class HomeViewController: UIViewController {
                 item.contentInsets.top = 16
                 item.contentInsets.bottom = 32
                 
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .estimated(103), heightDimension: .estimated(157)), subitems: [item])
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .estimated(125), heightDimension: .estimated(225)), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
                 section.contentInsets.leading = 20
@@ -112,7 +115,25 @@ extension HomeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
-        cell.backgroundColor = .systemPink
+        
+        let imageView = UIImageView(frame: cell.contentView.bounds)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        
+        switch indexPath.section {
+        case 0:
+            imageView.image = UIImage(named: section0Images[indexPath.item])
+        case 1:
+            imageView.image = UIImage(named: section1Images[indexPath.item])
+        case 2:
+            imageView.image = UIImage(named: section2Images[indexPath.item])
+        default:
+            break
+        }
+        
+        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
+        cell.contentView.addSubview(imageView)
+        
         return cell
     }
     
@@ -121,7 +142,17 @@ extension HomeViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath)
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! HomeView
+        
+        switch indexPath.section {
+        case 1:
+            header.configure(with: "Popular Movies")
+        case 2:
+            header.configure(with: "Coming Soon")
+        default:
+            break
+        }
+        
         return header
     }
 }
@@ -139,12 +170,7 @@ extension HomeViewController: UICollectionViewDelegate {
 extension HomeViewController {
     
     private func configureNavbar() {
-        
-        let appearance = UINavigationBar.appearance()
-        appearance.frame.size.height = 100
-        appearance.barTintColor = UIColor(hexString: "202123")
-        appearance.isTranslucent = false
-        
+          
         let appLogo = UIImage(named: "logo")?.withRenderingMode(.alwaysOriginal)
         let leftBarButtonItem = UIBarButtonItem(image: appLogo, style: .plain, target: nil, action: nil)
         leftBarButtonItem.imageInsets = UIEdgeInsets(top: 0, left: 15, bottom: 15, right: 0)

@@ -16,6 +16,12 @@ class TabBarController: UITabBarController {
     }
     
     private func setupTabs() {
+        let tabBarAppearance = UITabBarAppearance()
+        tabBarAppearance.configureWithDefaultBackground()
+        tabBarAppearance.backgroundColor = UIColor(hexString: "#202123")
+        UITabBar.appearance().standardAppearance = tabBarAppearance
+        UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
+        
         let home = createNav(image: UIImage(systemName: "house"), vc: HomeViewController())
         let popular = createNav(image: UIImage(systemName: "magnifyingglass"), vc: PopularViewController())
         let favorite = createNav(image: UIImage(systemName: "heart"), vc: FavoriteViewController())

@@ -23,10 +23,15 @@ class HomeView: UICollectionReusableView {
         headerLabel.frame = bounds
     }
     
-    func setupHeader() {
-        headerLabel.text = "Popular Movies"
+    func configure(with title: String) {
+        headerLabel.text = title
         headerLabel.textColor = UIColor(hexString: "FFFFFF")
-        headerLabel.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.bold)
+        headerLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+    }
+    
+    func setupHeader() {
+        headerLabel.textColor = UIColor(hexString: "FFFFFF")
+        headerLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
     }
     
     required init?(coder: NSCoder) {
