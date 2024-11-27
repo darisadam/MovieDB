@@ -61,12 +61,14 @@ class HomeViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(hexString: "#25272A")
         configureNavbar()
-        
         collectionViewSetup()
         
-        print("home")
+        view.backgroundColor = UIColor(hexString: "#25272A")
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
     }
     
 }
@@ -170,7 +172,10 @@ extension HomeViewController: UICollectionViewDelegate {
 extension HomeViewController {
     
     private func configureNavbar() {
-          
+        
+        UINavigationBar.appearance().barTintColor = UIColor(hexString: "#202123")
+        UINavigationBar.appearance().backgroundColor = UIColor(hexString: "#202123")
+        
         let appLogo = UIImage(named: "logo")?.withRenderingMode(.alwaysOriginal)
         let leftBarButtonItem = UIBarButtonItem(image: appLogo, style: .plain, target: nil, action: nil)
         leftBarButtonItem.imageInsets = UIEdgeInsets(top: 0, left: 15, bottom: 15, right: 0)
