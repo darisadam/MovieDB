@@ -11,6 +11,8 @@ class DetailViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        view.backgroundColor = UIColor(hexString: "#25272A")
 
         print("detail")
     }
