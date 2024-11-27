@@ -9,6 +9,8 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    let sectionTitles = ["Popular Movies", "Coming Soon"]
+    
     private let homeMovieTable: UITableView = {
         let table = UITableView(frame: .zero, style: .grouped)
         table.register(HomeTableView.self, forCellReuseIdentifier: HomeTableView.identifier)
@@ -27,7 +29,7 @@ class HomeViewController: UIViewController {
         
         configureNavbar()
         
-        homeMovieTable.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 275))
+//        homeMovieTable.tableHeaderView = UIView(frame: CGRect(x: 0, y: 0, width: view.bounds.width, height: 275))
         
         print("home")
     }
@@ -44,7 +46,7 @@ class HomeViewController: UIViewController {
 extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
     
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return sectionTitles.count
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -68,11 +70,16 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
         return 40
     }
     
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        let defaultOffset = view.safeAreaInsets.top
-        let offset = scrollView.contentOffset.y + defaultOffset
-        
-        navigationController?.navigationBar.transform = .init(translationX: 0, y: min(0, -offset))
+    func tableView(_ tableView: UITableView, willDisplayHeaderView view: UIView, forSection section: Int) {
+        guard let header = view as? UITableViewHeaderFooterView else { return }
+        header.textLabel?.font = UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .headline).pointSize, weight: .bold)
+        header.textLabel?.frame = CGRect(x: header.bounds.origin.x, y: header.bounds.origin.y, width: 100, height: header.bounds.height)
+        header.textLabel?.textColor = UIColor(hexString: "FFFFFF")
+        header.textLabel?.text = header.textLabel?.text?.capitalized
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        return sectionTitles[section]
     }
     
 }
@@ -80,46 +87,13 @@ extension HomeViewController: UITableViewDelegate, UITableViewDataSource {
 //MARK: - Home Navigation Bar
 
 extension HomeViewController {
+    
     private func configureNavbar() {
-        // Configure left side title
-        let movieText = NSAttributedString(
-            string: "Movie",
-            attributes: [
-                .foregroundColor: UIColor(hexString: "FFFFFF"),
-                .font: UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .title2).pointSize, weight: .bold)
-            ]
-        )
-        
-        let dbText = NSAttributedString(
-            string: "DB",
-            attributes: [
-                .foregroundColor: UIColor(hexString: "#FFD130"),
-                .font: UIFont.systemFont(ofSize: UIFont.preferredFont(forTextStyle: .title2).pointSize, weight: .bold)
-            ]
-        )
-        
-        let combinedText = NSMutableAttributedString()
-        combinedText.append(movieText)
-        combinedText.append(dbText)
-        
-        let titleLabel = UILabel()
-        titleLabel.attributedText = combinedText
-        
-        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: titleLabel)
+        let appLogo = UIImage(named: "logo")?.withRenderingMode(.alwaysOriginal)
+        navigationItem.leftBarButtonItem = UIBarButtonItem(image: appLogo, style: .plain, target: nil, action: nil)
         
         let bellImage = UIImage(systemName: "bell")?.withTintColor(.white, renderingMode: .alwaysOriginal)
-        let bellButton = UIBarButtonItem(
-            image: bellImage,
-            style: .plain,
-            target: self,
-            action: #selector(bellButtonTapped)
-        )
-        
-        navigationItem.rightBarButtonItem = bellButton
+        navigationItem.rightBarButtonItem = UIBarButtonItem(image: bellImage, style: .plain, target: self, action: nil)
     }
     
-    @objc private func bellButtonTapped() {
-        // Handle bell button tap
-        print("Notification button tapped")
-    }
 }
