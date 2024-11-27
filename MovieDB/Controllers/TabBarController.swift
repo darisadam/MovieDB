@@ -1,5 +1,5 @@
 //
-//  MovieTabBar.swift
+//  TabBarController.swift
 //  MovieDB
 //
 //  Created by Adam Daris Ryadhi on 23/11/24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class MovieTabBar: UITabBarController {
+class TabBarController: UITabBarController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
