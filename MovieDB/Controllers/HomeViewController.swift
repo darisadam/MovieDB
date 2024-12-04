@@ -9,11 +9,15 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    //MARK: - Variables and Constants
+    
     let cellId = "homeCell"
     let headerId = "homeHeader"
     let categoryHeaderId = "homeCategoryHeader"
     let screenWidth = UIScreen.main.bounds.size.width
     let screenHeight = UIScreen.main.bounds.size.height
+    
+    //MARK: - Components
     
     let collectionView: UICollectionView = {
         
@@ -22,10 +26,9 @@ class HomeViewController: UIViewController {
             if sectionNumber == 0 {
                 
                 let item = NSCollectionLayoutItem(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(1)))
-//                item.contentInsets.top = additionalSafeAreaInsets.top
                 item.contentInsets.bottom = 30
                 
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(261)), subitems: [item])
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(325)), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .paging
                 
@@ -38,7 +41,7 @@ class HomeViewController: UIViewController {
                 item.contentInsets.top = 16
                 item.contentInsets.bottom = 32
                 
-                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .estimated(103), heightDimension: .estimated(157)), subitems: [item])
+                let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .estimated(125), heightDimension: .estimated(225)), subitems: [item])
                 let section = NSCollectionLayoutSection(group: group)
                 section.orthogonalScrollingBehavior = .continuous
                 section.contentInsets.leading = 20
@@ -50,20 +53,23 @@ class HomeViewController: UIViewController {
         }
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
         
         return collectionView
     }()
     
+    //MARK: - Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = UIColor(hexString: "#25272A")
-        configureNavbar()
+        setupNavbar()
+        setupCollectionView()
         
-        collectionViewSetup()
-        
-        print("home")
+        view.backgroundColor = mdbBackground
+    }
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
     }
     
 }
@@ -72,7 +78,7 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController {
     
-    private func collectionViewSetup() {
+    private func setupCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -83,7 +89,7 @@ extension HomeViewController {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView.register(HomeView.self, forSupplementaryViewOfKind: categoryHeaderId, withReuseIdentifier: headerId)
+        collectionView.register(HomeCollectionReusableView.self, forSupplementaryViewOfKind: categoryHeaderId, withReuseIdentifier: headerId)
         
         view.addSubview(collectionView)
         
@@ -112,7 +118,25 @@ extension HomeViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
-        cell.backgroundColor = .systemPink
+        
+        let imageView = UIImageView(frame: cell.contentView.bounds)
+        imageView.contentMode = .scaleAspectFill
+        imageView.clipsToBounds = true
+        
+        switch indexPath.section {
+        case 0:
+            imageView.image = UIImage(named: HomeDummyData.section0Images[indexPath.item])
+        case 1:
+            imageView.image = UIImage(named: HomeDummyData.section1Images[indexPath.item])
+        case 2:
+            imageView.image = UIImage(named: HomeDummyData.section2Images[indexPath.item])
+        default:
+            break
+        }
+        
+        cell.contentView.subviews.forEach { $0.removeFromSuperview() }
+        cell.contentView.addSubview(imageView)
+        
         return cell
     }
     
@@ -121,7 +145,17 @@ extension HomeViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath)
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! HomeCollectionReusableView
+        
+        switch indexPath.section {
+        case 1:
+            header.configure(with: "Popular Movies")
+        case 2:
+            header.configure(with: "Coming Soon")
+        default:
+            break
+        }
+        
         return header
     }
 }
@@ -134,16 +168,13 @@ extension HomeViewController: UICollectionViewDelegate {
     
 }
 
-//MARK: - Home Navigation Bar
+//MARK: - Navigation Bar Setup
 
 extension HomeViewController {
     
-    private func configureNavbar() {
+    private func setupNavbar() {
         
-        let appearance = UINavigationBar.appearance()
-        appearance.frame.size.height = 100
-        appearance.barTintColor = UIColor(hexString: "202123")
-        appearance.isTranslucent = false
+        UINavigationBar.appearance().barTintColor = mdbNavbar
         
         let appLogo = UIImage(named: "logo")?.withRenderingMode(.alwaysOriginal)
         let leftBarButtonItem = UIBarButtonItem(image: appLogo, style: .plain, target: nil, action: nil)

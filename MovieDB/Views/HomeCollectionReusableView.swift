@@ -1,5 +1,5 @@
 //
-//  HomeView.swift
+//  HomeCollectionReusableView.swift
 //  MovieDB
 //
 //  Created by Adam Daris Ryadhi on 27/11/24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeView: UICollectionReusableView {
+class HomeCollectionReusableView: UICollectionReusableView {
 
     let headerLabel = UILabel()
     
@@ -23,10 +23,15 @@ class HomeView: UICollectionReusableView {
         headerLabel.frame = bounds
     }
     
+    func configure(with title: String) {
+        headerLabel.text = title
+        headerLabel.textColor = mdbWhite
+        headerLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
+    }
+    
     func setupHeader() {
-        headerLabel.text = "Popular Movies"
-        headerLabel.textColor = UIColor(hexString: "FFFFFF")
-        headerLabel.font = UIFont.systemFont(ofSize: 20, weight: UIFont.Weight.bold)
+        headerLabel.textColor = mdbWhite
+        headerLabel.font = UIFont.systemFont(ofSize: 20, weight: .bold)
     }
     
     required init?(coder: NSCoder) {
