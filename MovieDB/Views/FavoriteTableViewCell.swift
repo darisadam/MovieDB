@@ -13,7 +13,6 @@ class FavoriteTableViewCell: UITableViewCell {
         let image = UIImageView()
         image.contentMode = .scaleAspectFit
         image.image = UIImage(resource: .cars3)
-        
         return image
     }()
     

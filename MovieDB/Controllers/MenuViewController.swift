@@ -53,7 +53,7 @@ class MenuViewController: UICollectionViewController {
 extension MenuViewController {
     
     private func setupCollectionView() {
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(MenuCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         collectionView.backgroundColor = .clear
     }
     
@@ -68,8 +68,30 @@ extension MenuViewController {
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
-        cell.backgroundColor = .red
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! MenuCollectionViewCell
+        
+        // Configure cell based on index
+        switch indexPath.item {
+        case 0:
+            cell.configure(systemImageName: "film", text: "Movies")
+        case 1:
+            cell.configure(systemImageName: "tv", text: "TV Shows")
+        case 2:
+            cell.configure(systemImageName: "person", text: "Actors")
+        case 3:
+            cell.configure(systemImageName: "star", text: "Favorites")
+        case 4:
+            cell.configure(systemImageName: "globe", text: "Discover")
+        case 5:
+            cell.configure(systemImageName: "clock", text: "History")
+        case 6:
+            cell.configure(systemImageName: "arrow.down", text: "Downloads")
+        case 7:
+            cell.configure(systemImageName: "gear", text: "Settings")
+        default:
+            break
+        }
+        
         return cell
     }
     

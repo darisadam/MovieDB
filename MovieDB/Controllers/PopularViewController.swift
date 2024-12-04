@@ -64,7 +64,7 @@ extension PopularViewController {
         collectionView.showsHorizontalScrollIndicator = false
         collectionView.showsVerticalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(PopularCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
         
         view.addSubview(collectionView)
         
@@ -87,13 +87,11 @@ extension PopularViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
-        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
-        cell.backgroundColor = .red
+        let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! PopularCollectionViewCell
+        cell.backgroundColor = .clear
         
         return cell
     }
-    
-    
 }
 
 //MARK: - Collection View Delegate
@@ -124,5 +122,4 @@ extension PopularViewController: UISearchResultsUpdating {
         navigationItem.hidesSearchBarWhenScrolling = false
         definesPresentationContext = false
     }
-    
 }
