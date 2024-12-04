@@ -9,7 +9,11 @@ import UIKit
 
 class PopularViewController: UIViewController {
     
+    //MARK: - Variables and Constants
+    
     let cellId = "popularCell"
+    
+    //MARK: - Components
     
     let collectionView: UICollectionView = {
         
@@ -32,18 +36,20 @@ class PopularViewController: UIViewController {
         return collectionView
     }()
     
+    //MARK: - Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureNavbar()
+        setupNavbar()
         setupCollectionView()
         
-        view.backgroundColor = UIColor(hexString: "#25272A")
+        view.backgroundColor = mdbBackground
     }
     
 }
 
-//MARK: - Collection View Setup
+//MARK: - Components Setup
 
 extension PopularViewController {
     
@@ -95,11 +101,11 @@ extension PopularViewController: UICollectionViewDelegate {
     
 }
 
-//MARK: - Popular Navigation Bar
+//MARK: - Navigation Bar Setup
 
 extension PopularViewController {
     
-    private func configureNavbar() {
+    private func setupNavbar() {
         
     }
     

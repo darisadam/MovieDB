@@ -1,5 +1,5 @@
 //
-//  FavoriteView.swift
+//  FavoriteTableViewCell.swift
 //  MovieDB
 //
 //  Created by Adam Daris Ryadhi on 27/11/24.
@@ -7,20 +7,19 @@
 
 import UIKit
 
-class FavoriteView: UITableViewCell {
+class FavoriteTableViewCell: UITableViewCell {
     
     private let movieImage: UIImageView = {
         let image = UIImageView()
         image.contentMode = .scaleAspectFit
         image.image = UIImage(resource: .cars3)
-        image.tintColor = .label
         
         return image
     }()
     
     private let movieLabel: UILabel = {
         let label = UILabel()
-        label.textColor = .label
+        label.textColor = mdbWhite
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 16, weight: .regular)
         label.text = "Cars 3"
@@ -29,7 +28,7 @@ class FavoriteView: UITableViewCell {
     
     private let movieYear: UILabel = {
         let label = UILabel()
-        label.textColor = .label
+        label.textColor = mdbWhite
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 14, weight: .regular)
         label.text = "2020"
@@ -38,7 +37,7 @@ class FavoriteView: UITableViewCell {
     
     private let movieGenre: UILabel = {
         let label = UILabel()
-        label.textColor = .label
+        label.textColor = mdbWhite
         label.textAlignment = .left
         label.font = .systemFont(ofSize: 12, weight: .regular)
         label.text = "Kids, Comedy, Racing"
@@ -69,8 +68,23 @@ class FavoriteView: UITableViewCell {
             movieImage.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
             movieImage.bottomAnchor.constraint(equalTo: contentView.layoutMarginsGuide.bottomAnchor),
             movieImage.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
-            movieImage.heightAnchor.constraint(equalToConstant: 90),
-            movieImage.widthAnchor.constraint(equalToConstant: 90),
+            movieImage.heightAnchor.constraint(equalToConstant: 100),
+            movieImage.widthAnchor.constraint(equalToConstant: 225),
+            
+            movieLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
+            movieLabel.bottomAnchor.constraint(equalTo: movieYear.topAnchor),
+            movieLabel.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 10),
+            movieLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            movieYear.topAnchor.constraint(equalTo: movieLabel.bottomAnchor),
+            movieYear.bottomAnchor.constraint(equalTo: movieGenre.topAnchor),
+            movieYear.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 10),
+            movieYear.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            movieGenre.topAnchor.constraint(equalTo: movieYear.bottomAnchor),
+            movieGenre.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            movieGenre.leadingAnchor.constraint(equalTo: movieImage.trailingAnchor, constant: 10),
+            movieGenre.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
         ])
     }
     

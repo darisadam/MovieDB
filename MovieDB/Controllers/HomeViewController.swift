@@ -9,11 +9,15 @@ import UIKit
 
 class HomeViewController: UIViewController {
     
+    //MARK: - Variables and Constants
+    
     let cellId = "homeCell"
     let headerId = "homeHeader"
     let categoryHeaderId = "homeCategoryHeader"
     let screenWidth = UIScreen.main.bounds.size.width
     let screenHeight = UIScreen.main.bounds.size.height
+    
+    //MARK: - Components
     
     let collectionView: UICollectionView = {
         
@@ -53,13 +57,15 @@ class HomeViewController: UIViewController {
         return collectionView
     }()
     
+    //MARK: - Life Cycle
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        configureNavbar()
+        setupNavbar()
         setupCollectionView()
         
-        view.backgroundColor = UIColor(hexString: "#25272A")
+        view.backgroundColor = mdbBackground
     }
     
     override var preferredStatusBarStyle: UIStatusBarStyle {
@@ -83,7 +89,7 @@ extension HomeViewController {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView.register(HomeView.self, forSupplementaryViewOfKind: categoryHeaderId, withReuseIdentifier: headerId)
+        collectionView.register(HomeCollectionReusableView.self, forSupplementaryViewOfKind: categoryHeaderId, withReuseIdentifier: headerId)
         
         view.addSubview(collectionView)
         
@@ -139,7 +145,7 @@ extension HomeViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! HomeView
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! HomeCollectionReusableView
         
         switch indexPath.section {
         case 1:
@@ -162,13 +168,13 @@ extension HomeViewController: UICollectionViewDelegate {
     
 }
 
-//MARK: - Home Navigation Bar
+//MARK: - Navigation Bar Setup
 
 extension HomeViewController {
     
-    private func configureNavbar() {
+    private func setupNavbar() {
         
-        UINavigationBar.appearance().barTintColor = UIColor(hexString: "#202123")
+        UINavigationBar.appearance().barTintColor = mdbNavbar
         
         let appLogo = UIImage(named: "logo")?.withRenderingMode(.alwaysOriginal)
         let leftBarButtonItem = UIBarButtonItem(image: appLogo, style: .plain, target: nil, action: nil)

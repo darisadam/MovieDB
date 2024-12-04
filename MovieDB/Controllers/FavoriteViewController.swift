@@ -9,19 +9,28 @@ import UIKit
 
 class FavoriteViewController: UIViewController {
     
-    private let tableView = UITableView()
+    //MARK: - Variables and Constants
+    
     private let cellId = "favoriteCell"
+    
+    //MARK: - Components
+    private let tableView = UITableView()
+    private let searchController = UISearchController(searchResultsController: nil)
+    
+    //MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNavbar()
         setupTableView()
         
-        view.backgroundColor = UIColor(hexString: "#25272A")
+        view.backgroundColor = mdbBackground
     }
     
-    
 }
+
+//MARK: - Component Setups
 
 extension FavoriteViewController {
     
@@ -30,8 +39,8 @@ extension FavoriteViewController {
         tableView.delegate = self
         
         tableView.backgroundColor = .clear
-        tableView.allowsSelection = true
-        tableView.register(FavoriteView.self, forCellReuseIdentifier: cellId)
+        tableView.allowsSelection = false
+        tableView.register(FavoriteTableViewCell.self, forCellReuseIdentifier: cellId)
         tableView.translatesAutoresizingMaskIntoConstraints = false
         
         view.addSubview(tableView)
@@ -46,6 +55,8 @@ extension FavoriteViewController {
     
 }
 
+//MARK: - Table View Data Source
+
 extension FavoriteViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -53,17 +64,33 @@ extension FavoriteViewController: UITableViewDataSource {
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? FavoriteView else {
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? FavoriteTableViewCell else {
             fatalError("Table View error on Favorite")
         }
-        cell.textLabel?.text = indexPath.row.description
-        cell.textLabel?.textColor = .black
+        cell.backgroundColor = .clear
         
         return cell
     }
     
 }
 
+//MARK: - Table View Delegate
+
 extension FavoriteViewController: UITableViewDelegate {
+    
+}
+
+//MARK: - Navigation Bar Setup
+
+extension FavoriteViewController {
+    
+    
+    private func setupSearchController() {
+        
+    }
+    
+    private func setupNavbar() {
+        setupSearchController()
+    }
     
 }

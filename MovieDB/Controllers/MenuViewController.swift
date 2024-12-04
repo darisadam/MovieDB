@@ -9,6 +9,12 @@ import SwiftUI
 
 class MenuViewController: UICollectionViewController {
     
+    //MARK: - Variables and Constants
+    
+    private let cellId = "menuCell"
+    
+    //MARK: - Initializer
+    
     init() {
         let layout = UICollectionViewCompositionalLayout { (sectionNumber, env) in
             let item = NSCollectionLayoutItem.init(layoutSize: .init(widthDimension: .fractionalWidth(0.5), heightDimension: .fractionalHeight(1)))
@@ -26,21 +32,23 @@ class MenuViewController: UICollectionViewController {
         super.init(collectionViewLayout: layout)
     }
     
-    private let cellId = "menuCell"
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    //MARK: - Life Cycle
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         setupCollectionView()
         
-        view.backgroundColor = UIColor(hexString: "#25272A")
-    }
-    
-    required init?(coder: NSCoder) {
-        fatalError("init(coder:) has not been implemented")
+        view.backgroundColor = mdbBackground
     }
     
 }
+
+//MARK: - Components Setup
 
 extension MenuViewController {
     
@@ -50,6 +58,8 @@ extension MenuViewController {
     }
     
 }
+
+//MARK: - Collection View Data Source
 
 extension MenuViewController {
     
@@ -64,6 +74,8 @@ extension MenuViewController {
     }
     
 }
+
+//MARK: - Preview
 
 struct MenuViewController_Previews: PreviewProvider {
     

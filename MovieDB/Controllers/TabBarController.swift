@@ -18,7 +18,7 @@ class TabBarController: UITabBarController {
     private func setupTabs() {
         let tabBarAppearance = UITabBarAppearance()
         tabBarAppearance.configureWithDefaultBackground()
-        tabBarAppearance.backgroundColor = UIColor(hexString: "#202123")
+        tabBarAppearance.backgroundColor = mdbTabBar
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         
@@ -35,9 +35,9 @@ class TabBarController: UITabBarController {
         let nav = UINavigationController(rootViewController: vc)
         nav.tabBarItem.image = image
         
-        tabBar.backgroundColor = UIColor(hexString: "#202123")
-        tabBar.tintColor = UIColor(hexString: "#FFD130")
-        tabBar.unselectedItemTintColor = UIColor(hexString: "#FFFFFF")
+        tabBar.backgroundColor = mdbTabBar
+        tabBar.tintColor = mdbTabBarIcon
+        tabBar.unselectedItemTintColor = mdbWhite
         
         return nav
     }
