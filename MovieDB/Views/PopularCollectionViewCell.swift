@@ -8,33 +8,31 @@
 import UIKit
 
 class PopularCollectionViewCell: UICollectionViewCell {
-    // Movie image
+
     private let movieImageView: UIImageView = {
         let imageView = UIImageView()
-        imageView.image = UIImage(named: "mz1") // Assuming "mz1" is in your asset catalog
+        imageView.image = UIImage(named: "mz1")
         imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    // Movie title label
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.text = "Maze Runner"
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 16, weight: .bold)
+        label.textAlignment = .justified
+        label.font = UIFont.systemFont(ofSize: 12, weight: .regular)
         label.textColor = mdbWhite
         label.translatesAutoresizingMaskIntoConstraints = false
         return label
     }()
     
-    // Actors label
     private let actorsLabel: UILabel = {
         let label = UILabel()
         label.text = "Dylan O'Brien, Kaya Scodelario, Will Poulter"
-        label.textAlignment = .center
-        label.font = UIFont.systemFont(ofSize: 14)
+        label.textAlignment = .justified
+        label.font = UIFont.systemFont(ofSize: 10, weight: .regular)
         label.textColor = mdbWhite
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -50,28 +48,30 @@ class PopularCollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configure(with popularMovies: PopularData) {
+        movieImageView.image = UIImage(named: popularMovies.imageName)
+        titleLabel.text = popularMovies.title
+        actorsLabel.text = popularMovies.actors
+    }
+    
     private func setupCell() {
-        // Add image and labels to the cell's content view
         contentView.addSubview(movieImageView)
         contentView.addSubview(titleLabel)
         contentView.addSubview(actorsLabel)
         
-        // Set up constraints for movie image
         NSLayoutConstraint.activate([
             movieImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 10),
             movieImageView.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             movieImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10),
-            movieImageView.heightAnchor.constraint(equalToConstant: 150) // Adjust height as needed
+            movieImageView.heightAnchor.constraint(equalToConstant: 250)
         ])
         
-        // Set up constraints for title label
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: movieImageView.bottomAnchor, constant: 10),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
             titleLabel.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -10)
         ])
         
-        // Set up constraints for actors label
         NSLayoutConstraint.activate([
             actorsLabel.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 5),
             actorsLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),

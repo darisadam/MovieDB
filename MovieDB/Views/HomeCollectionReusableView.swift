@@ -9,7 +9,7 @@ import UIKit
 
 class HomeCollectionReusableView: UICollectionReusableView {
 
-    let headerLabel = UILabel()
+    private let headerLabel = UILabel()
     
     override init(frame: CGRect) {
         super.init(frame: frame)

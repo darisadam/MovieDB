@@ -11,12 +11,16 @@ class PopularViewController: UIViewController {
     
     //MARK: - Variables and Constants
     
-    let cellId = "popularCell"
+    private let cellId = "popularCell"
+    private let headerId = "popularHeader"
+    private let categoryHeaderId = "popularCategoryHeader"
+    private var searchLabel = ""
+    private var popularMovies = PopularDummyData.popularMovies
     
     //MARK: - Components
     
     private let searchController = UISearchController(searchResultsController: nil)
-    let collectionView: UICollectionView = {
+    private let collectionView: UICollectionView = {
         
         let layout = UICollectionViewCompositionalLayout { (sectionNumber, env) -> NSCollectionLayoutSection in
             
@@ -26,8 +30,9 @@ class PopularViewController: UIViewController {
             item.contentInsets.leading = 10
             item.contentInsets.trailing = 10
             
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(250)), subitems: [item])
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.5)), subitems: [item])
             let section = NSCollectionLayoutSection(group: group)
+            section.boundarySupplementaryItems = [.init(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .estimated(20)), elementKind: PopularViewController().categoryHeaderId, alignment: .topLeading)]
             
             return section
         }
@@ -65,6 +70,7 @@ extension PopularViewController {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(PopularCollectionViewCell.self, forCellWithReuseIdentifier: cellId)
+        collectionView.register(PopularCollectionReusableView.self, forSupplementaryViewOfKind: categoryHeaderId, withReuseIdentifier: headerId)
         
         view.addSubview(collectionView)
         
@@ -83,14 +89,24 @@ extension PopularViewController {
 extension PopularViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 3
+        return popularMovies.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath) as! PopularCollectionViewCell
         cell.backgroundColor = .clear
         
+        let popularMovies = popularMovies[indexPath.item]
+        cell.configure(with: popularMovies)
+        
         return cell
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! PopularCollectionReusableView
+        header.configure(with: "Showing result of ‘\(searchLabel)’")
+        
+        return header
     }
 }
 
@@ -108,11 +124,11 @@ extension PopularViewController: UISearchResultsUpdating {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.placeholder = "search popular movies"
+        searchController.searchBar.placeholder = "Search"
     }
     
     func updateSearchResults(for searchController: UISearchController) {
-        print("debug: \(searchController.searchBar.text ?? "")")
+        searchLabel = searchController.searchBar.text ?? ""
     }
     
     private func setupNavbar() {

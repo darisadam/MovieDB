@@ -88,7 +88,7 @@ extension FavoriteViewController: UISearchResultsUpdating {
         searchController.searchResultsUpdater = self
         searchController.obscuresBackgroundDuringPresentation = false
         searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.placeholder = "search favorite movies"
+        searchController.searchBar.placeholder = "Search"
     }
     
     func updateSearchResults(for searchController: UISearchController) {

@@ -11,11 +11,9 @@ class HomeViewController: UIViewController {
     
     //MARK: - Variables and Constants
     
-    let cellId = "homeCell"
-    let headerId = "homeHeader"
-    let categoryHeaderId = "homeCategoryHeader"
-    let screenWidth = UIScreen.main.bounds.size.width
-    let screenHeight = UIScreen.main.bounds.size.height
+    private let cellId = "homeCell"
+    private let headerId = "homeHeader"
+    private let categoryHeaderId = "homeCategoryHeader"
     
     //MARK: - Components
     
@@ -120,7 +118,7 @@ extension HomeViewController: UICollectionViewDataSource {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellId, for: indexPath)
         
         let imageView = UIImageView(frame: cell.contentView.bounds)
-        imageView.contentMode = .scaleAspectFill
+        imageView.contentMode = .scaleAspectFit
         imageView.clipsToBounds = true
         
         switch indexPath.section {
@@ -179,10 +177,11 @@ extension HomeViewController {
         let appLogo = UIImage(named: "logo")?.withRenderingMode(.alwaysOriginal)
         let leftBarButtonItem = UIBarButtonItem(image: appLogo, style: .plain, target: nil, action: nil)
         leftBarButtonItem.imageInsets = UIEdgeInsets(top: 0, left: 15, bottom: 15, right: 0)
+        leftBarButtonItem.isEnabled = false
         navigationItem.leftBarButtonItem = leftBarButtonItem
         
         
-        let bellImage = UIImage(systemName: "bell")?.withTintColor(.white, renderingMode: .alwaysOriginal)
+        let bellImage = UIImage(resource: .notificationBell).withTintColor(.white, renderingMode: .alwaysOriginal)
         let rightBarButtonItem = UIBarButtonItem(image: bellImage, style: .plain, target: self, action: nil)
         rightBarButtonItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 15)
         navigationItem.rightBarButtonItem = rightBarButtonItem

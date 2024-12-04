@@ -22,10 +22,10 @@ class TabBarController: UITabBarController {
         UITabBar.appearance().standardAppearance = tabBarAppearance
         UITabBar.appearance().scrollEdgeAppearance = tabBarAppearance
         
-        let home = createNav(image: UIImage(systemName: "house"), vc: HomeViewController())
-        let popular = createNav(image: UIImage(systemName: "magnifyingglass"), vc: PopularViewController())
-        let favorite = createNav(image: UIImage(systemName: "heart"), vc: FavoriteViewController())
-        let menu = createNav(image: UIImage(systemName: "square.grid.2x2"), vc: MenuViewController())
+        let home = createNav(image: UIImage(resource: .home), vc: HomeViewController())
+        let popular = createNav(image: UIImage(resource: .popular), vc: PopularViewController())
+        let favorite = createNav(image: UIImage(resource: .favorite), vc: FavoriteViewController())
+        let menu = createNav(image: UIImage(resource: .menu), vc: MenuViewController())
         
         setViewControllers([home, popular, favorite, menu], animated: true)
     }

@@ -16,6 +16,12 @@ class FavoriteTableViewCell: UITableViewCell {
         return image
     }()
     
+    private let favoriteButton: UIButton = {
+        let button = UIButton()
+        button.setImage(UIImage(systemName: "heart.circle.fill"), for: .normal)
+        return button
+    }()
+    
     private let movieLabel: UILabel = {
         let label = UILabel()
         label.textColor = mdbWhite
@@ -57,11 +63,13 @@ class FavoriteTableViewCell: UITableViewCell {
         contentView.addSubview(movieLabel)
         contentView.addSubview(movieYear)
         contentView.addSubview(movieGenre)
+        contentView.addSubview(favoriteButton)
         
         movieImage.translatesAutoresizingMaskIntoConstraints = false
         movieLabel.translatesAutoresizingMaskIntoConstraints = false
         movieYear.translatesAutoresizingMaskIntoConstraints = false
         movieGenre.translatesAutoresizingMaskIntoConstraints = false
+        favoriteButton.translatesAutoresizingMaskIntoConstraints = false
         
         NSLayoutConstraint.activate([
             movieImage.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
@@ -69,6 +77,10 @@ class FavoriteTableViewCell: UITableViewCell {
             movieImage.leadingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.leadingAnchor),
             movieImage.heightAnchor.constraint(equalToConstant: 100),
             movieImage.widthAnchor.constraint(equalToConstant: 225),
+            
+            favoriteButton.topAnchor.constraint(equalTo: contentView.layoutMarginsGuide.topAnchor),
+            favoriteButton.leadingAnchor.constraint(equalTo: movieLabel.trailingAnchor),
+            favoriteButton.trailingAnchor.constraint(equalTo: contentView.layoutMarginsGuide.trailingAnchor),
             
             movieLabel.topAnchor.constraint(equalTo: contentView.topAnchor),
             movieLabel.bottomAnchor.constraint(equalTo: movieYear.topAnchor),
