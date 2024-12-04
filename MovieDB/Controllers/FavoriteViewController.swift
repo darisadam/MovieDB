@@ -82,15 +82,25 @@ extension FavoriteViewController: UITableViewDelegate {
 
 //MARK: - Navigation Bar Setup
 
-extension FavoriteViewController {
-    
+extension FavoriteViewController: UISearchResultsUpdating {
     
     private func setupSearchController() {
-        
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.searchBar.placeholder = "search favorite movies"
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        print("debug: \(searchController.searchBar.text ?? "")")
     }
     
     private func setupNavbar() {
         setupSearchController()
+        
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = false
     }
     
 }

@@ -15,6 +15,7 @@ class PopularViewController: UIViewController {
     
     //MARK: - Components
     
+    private let searchController = UISearchController(searchResultsController: nil)
     let collectionView: UICollectionView = {
         
         let layout = UICollectionViewCompositionalLayout { (sectionNumber, env) -> NSCollectionLayoutSection in
@@ -103,10 +104,25 @@ extension PopularViewController: UICollectionViewDelegate {
 
 //MARK: - Navigation Bar Setup
 
-extension PopularViewController {
+extension PopularViewController: UISearchResultsUpdating {
+    
+    private func setupSearchController() {
+        searchController.searchResultsUpdater = self
+        searchController.obscuresBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.searchBar.placeholder = "search popular movies"
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        print("debug: \(searchController.searchBar.text ?? "")")
+    }
     
     private func setupNavbar() {
+        setupSearchController()
         
+        navigationItem.searchController = searchController
+        navigationItem.hidesSearchBarWhenScrolling = false
+        definesPresentationContext = false
     }
     
 }
