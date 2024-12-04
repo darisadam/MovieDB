@@ -15,10 +15,6 @@ class HomeViewController: UIViewController {
     let screenWidth = UIScreen.main.bounds.size.width
     let screenHeight = UIScreen.main.bounds.size.height
     
-    let section0Images = ["captainamerica", "captainamerica", "captainamerica"]
-    let section1Images = ["split", "rover", "greenbook", "split", "rover", "greenbook"]
-    let section2Images = ["cars", "murdermystery", "avengers", "cars", "murdermystery", "avengers"]
-    
     let collectionView: UICollectionView = {
         
         let layout = UICollectionViewCompositionalLayout { (sectionNumber, env) -> NSCollectionLayoutSection in
@@ -53,7 +49,6 @@ class HomeViewController: UIViewController {
         }
         
         let collectionView = UICollectionView(frame: .zero, collectionViewLayout: layout)
-        collectionView.backgroundColor = .clear
         
         return collectionView
     }()
@@ -62,7 +57,7 @@ class HomeViewController: UIViewController {
         super.viewDidLoad()
         
         configureNavbar()
-        collectionViewSetup()
+        setupCollectionView()
         
         view.backgroundColor = UIColor(hexString: "#25272A")
     }
@@ -77,7 +72,7 @@ class HomeViewController: UIViewController {
 
 extension HomeViewController {
     
-    private func collectionViewSetup() {
+    private func setupCollectionView() {
         collectionView.dataSource = self
         collectionView.delegate = self
         
@@ -124,11 +119,11 @@ extension HomeViewController: UICollectionViewDataSource {
         
         switch indexPath.section {
         case 0:
-            imageView.image = UIImage(named: section0Images[indexPath.item])
+            imageView.image = UIImage(named: HomeDummyData.section0Images[indexPath.item])
         case 1:
-            imageView.image = UIImage(named: section1Images[indexPath.item])
+            imageView.image = UIImage(named: HomeDummyData.section1Images[indexPath.item])
         case 2:
-            imageView.image = UIImage(named: section2Images[indexPath.item])
+            imageView.image = UIImage(named: HomeDummyData.section2Images[indexPath.item])
         default:
             break
         }
@@ -174,7 +169,6 @@ extension HomeViewController {
     private func configureNavbar() {
         
         UINavigationBar.appearance().barTintColor = UIColor(hexString: "#202123")
-        UINavigationBar.appearance().backgroundColor = UIColor(hexString: "#202123")
         
         let appLogo = UIImage(named: "logo")?.withRenderingMode(.alwaysOriginal)
         let leftBarButtonItem = UIBarButtonItem(image: appLogo, style: .plain, target: nil, action: nil)
