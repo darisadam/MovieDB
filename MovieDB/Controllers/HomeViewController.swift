@@ -182,9 +182,16 @@ extension HomeViewController {
         
         
         let bellImage = UIImage(resource: .notificationBell).withTintColor(.white, renderingMode: .alwaysOriginal)
-        let rightBarButtonItem = UIBarButtonItem(image: bellImage, style: .plain, target: self, action: nil)
+        let rightBarButtonItem = UIBarButtonItem(image: bellImage, style: .plain, target: self, action: #selector(notificationBellTapped))
         rightBarButtonItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 15)
         navigationItem.rightBarButtonItem = rightBarButtonItem
+    }
+    
+    @objc private func notificationBellTapped() {
+        
+        let vc = DetailViewController()
+        navigationController?.pushViewController(vc, animated: true)
+        
     }
     
 }
