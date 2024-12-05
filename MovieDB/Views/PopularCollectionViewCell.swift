@@ -33,7 +33,7 @@ class PopularCollectionViewCell: UICollectionViewCell {
         label.text = "Dylan O'Brien, Kaya Scodelario, Will Poulter"
         label.textAlignment = .justified
         label.font = UIFont.systemFont(ofSize: 10, weight: .regular)
-        label.textColor = mdbWhite
+        label.textColor = mdbWhite.withAlphaComponent(0.6)
         label.numberOfLines = 2
         label.translatesAutoresizingMaskIntoConstraints = false
         return label

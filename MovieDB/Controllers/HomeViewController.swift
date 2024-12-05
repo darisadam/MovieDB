@@ -87,7 +87,7 @@ extension HomeViewController {
         collectionView.showsVerticalScrollIndicator = false
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         collectionView.register(UICollectionViewCell.self, forCellWithReuseIdentifier: cellId)
-        collectionView.register(HomeCollectionReusableView.self, forSupplementaryViewOfKind: categoryHeaderId, withReuseIdentifier: headerId)
+        collectionView.register(HomeViewHeader.self, forSupplementaryViewOfKind: categoryHeaderId, withReuseIdentifier: headerId)
         
         view.addSubview(collectionView)
         
@@ -143,7 +143,7 @@ extension HomeViewController: UICollectionViewDataSource {
     }
     
     func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
-        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! HomeCollectionReusableView
+        let header = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: headerId, for: indexPath) as! HomeViewHeader
         
         switch indexPath.section {
         case 1:

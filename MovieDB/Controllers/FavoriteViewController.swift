@@ -12,6 +12,7 @@ class FavoriteViewController: UIViewController {
     //MARK: - Variables and Constants
     
     private let cellId = "favoriteCell"
+    private var favoriteMovies = FavoriteDummyData.movies
     
     //MARK: - Components
     private let tableView = UITableView()
@@ -60,13 +61,15 @@ extension FavoriteViewController {
 extension FavoriteViewController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return 4
+        return favoriteMovies.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: cellId, for: indexPath) as? FavoriteTableViewCell else {
             fatalError("Table View error on Favorite")
         }
+        let movie = favoriteMovies[indexPath.row]
+        cell.configure(with: movie)
         cell.backgroundColor = .clear
         
         return cell

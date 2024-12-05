@@ -8,16 +8,15 @@
 import UIKit
 
 class MenuCollectionViewCell: UICollectionViewCell {
-    // Icon ImageView
+
     private let iconImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.contentMode = .scaleAspectFit
-        imageView.tintColor = .white
+        imageView.tintColor = mdbWhite
         imageView.translatesAutoresizingMaskIntoConstraints = false
         return imageView
     }()
     
-    // Label
     private let titleLabel: UILabel = {
         let label = UILabel()
         label.textAlignment = .center
@@ -37,15 +36,12 @@ class MenuCollectionViewCell: UICollectionViewCell {
     }
     
     private func setupCell() {
-        // Add subviews
         contentView.addSubview(iconImageView)
         contentView.addSubview(titleLabel)
         
-        // Background color
-        contentView.backgroundColor = .systemBlue
+        contentView.backgroundColor = .clear
         contentView.layer.cornerRadius = 10
         
-        // Constraints for icon
         NSLayoutConstraint.activate([
             iconImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 30),
             iconImageView.centerXAnchor.constraint(equalTo: contentView.centerXAnchor),
@@ -53,7 +49,6 @@ class MenuCollectionViewCell: UICollectionViewCell {
             iconImageView.heightAnchor.constraint(equalToConstant: 50)
         ])
         
-        // Constraints for label
         NSLayoutConstraint.activate([
             titleLabel.topAnchor.constraint(equalTo: iconImageView.bottomAnchor, constant: 10),
             titleLabel.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 10),
@@ -61,7 +56,6 @@ class MenuCollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    // Configuration method
     func configure(systemImageName: String, text: String) {
         iconImageView.image = UIImage(systemName: systemImageName)
         titleLabel.text = text

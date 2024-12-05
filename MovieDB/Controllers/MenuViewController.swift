@@ -23,7 +23,7 @@ class MenuViewController: UICollectionViewController {
             item.contentInsets.leading = 10
             item.contentInsets.trailing = 10
             
-            let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .absolute(200)), subitems: [item])
+            let group = NSCollectionLayoutGroup.horizontal(layoutSize: .init(widthDimension: .fractionalWidth(1), heightDimension: .fractionalHeight(0.2)), subitems: [item])
             let section = NSCollectionLayoutSection(group: group)
             
             return section
@@ -41,6 +41,7 @@ class MenuViewController: UICollectionViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        setupNavbar()
         setupCollectionView()
         
         view.backgroundColor = mdbBackground
@@ -97,6 +98,29 @@ extension MenuViewController {
     
 }
 
+//MARK: - Navigation Bar Setup
+
+extension MenuViewController {
+    
+    private func setupNavbar() {
+        
+        UINavigationBar.appearance().barTintColor = mdbNavbar
+        
+        let appLogo = UIImage(named: "logo")?.withRenderingMode(.alwaysOriginal)
+        let leftBarButtonItem = UIBarButtonItem(image: appLogo, style: .plain, target: nil, action: nil)
+        leftBarButtonItem.imageInsets = UIEdgeInsets(top: 0, left: 15, bottom: 15, right: 0)
+        leftBarButtonItem.isEnabled = false
+        navigationItem.leftBarButtonItem = leftBarButtonItem
+        
+        
+        let bellImage = UIImage(resource: .notificationBell).withTintColor(.white, renderingMode: .alwaysOriginal)
+        let rightBarButtonItem = UIBarButtonItem(image: bellImage, style: .plain, target: self, action: nil)
+        rightBarButtonItem.imageInsets = UIEdgeInsets(top: 0, left: 0, bottom: 15, right: 15)
+        navigationItem.rightBarButtonItem = rightBarButtonItem
+    }
+    
+}
+
 //MARK: - Preview
 
 struct MenuViewController_Previews: PreviewProvider {
@@ -117,4 +141,3 @@ struct MenuViewController_Previews: PreviewProvider {
         typealias UIViewControllerType = UIViewController
     }
 }
-

@@ -1,5 +1,5 @@
 //
-//  HomeCollectionReusableView.swift
+//  HomeViewHeader.swift
 //  MovieDB
 //
 //  Created by Adam Daris Ryadhi on 27/11/24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class HomeCollectionReusableView: UICollectionReusableView {
+class HomeViewHeader: UICollectionReusableView {
 
     private let headerLabel = UILabel()
     

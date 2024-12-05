@@ -1,5 +1,5 @@
 //
-//  PopularCollectionReusableView.swift
+//  PopularViewHeader.swift
 //  MovieDB
 //
 //  Created by Adam Daris Ryadhi on 04/12/24.
@@ -7,7 +7,7 @@
 
 import UIKit
 
-class PopularCollectionReusableView: UICollectionReusableView {
+class PopularViewHeader: UICollectionReusableView {
     
     private let headerLabel = UILabel()
     
