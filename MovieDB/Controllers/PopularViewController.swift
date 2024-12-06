@@ -19,7 +19,12 @@ class PopularViewController: UIViewController {
     
     //MARK: - Components
     
-    private let searchController = UISearchController(searchResultsController: nil)
+    private lazy var customSearchBar: CustomSearchBar = {
+        let searchBar = CustomSearchBar()
+        searchBar.setSearchButtonAction(target: self, action: #selector(searchButtonTapped))
+        return searchBar
+    }()
+    
     private let collectionView: UICollectionView = {
         
         let layout = UICollectionViewCompositionalLayout { (sectionNumber, env) -> NSCollectionLayoutSection in
@@ -118,24 +123,20 @@ extension PopularViewController: UICollectionViewDelegate {
 
 //MARK: - Navigation Bar Setup
 
-extension PopularViewController: UISearchResultsUpdating {
-    
-    private func setupSearchController() {
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.placeholder = "Search"
-    }
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        searchLabel = searchController.searchBar.text ?? ""
-    }
+extension PopularViewController {
     
     private func setupNavbar() {
-        setupSearchController()
-        
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-        definesPresentationContext = false
+        navigationItem.titleView = customSearchBar
     }
+    
+    @objc private func searchButtonTapped() {
+        
+        guard let searchText = customSearchBar.getSearchText(), !searchText.isEmpty else {
+            print("No search text entered")
+            return
+        }
+        
+        print("Searching for: \(searchText)")
+    }
+    
 }

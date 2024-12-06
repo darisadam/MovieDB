@@ -16,7 +16,12 @@ class FavoriteViewController: UIViewController {
     
     //MARK: - Components
     private let tableView = UITableView()
-    private let searchController = UISearchController(searchResultsController: nil)
+    
+    private lazy var customSearchBar: CustomSearchBar = {
+        let searchBar = CustomSearchBar()
+        searchBar.setSearchButtonAction(target: self, action: #selector(searchButtonTapped))
+        return searchBar
+    }()
     
     //MARK: - Life Cycle
     
@@ -85,25 +90,20 @@ extension FavoriteViewController: UITableViewDelegate {
 
 //MARK: - Navigation Bar Setup
 
-extension FavoriteViewController: UISearchResultsUpdating {
-    
-    private func setupSearchController() {
-        searchController.searchResultsUpdater = self
-        searchController.obscuresBackgroundDuringPresentation = false
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.searchBar.placeholder = "Search"
-    }
-    
-    func updateSearchResults(for searchController: UISearchController) {
-        print("debug: \(searchController.searchBar.text ?? "")")
-    }
+extension FavoriteViewController {
     
     private func setupNavbar() {
-        setupSearchController()
+        navigationItem.titleView = customSearchBar
+    }
+    
+    @objc private func searchButtonTapped() {
         
-        navigationItem.searchController = searchController
-        navigationItem.hidesSearchBarWhenScrolling = false
-        definesPresentationContext = false
+        guard let searchText = customSearchBar.getSearchText(), !searchText.isEmpty else {
+            print("No search text entered")
+            return
+        }
+        
+        print("Searching for: \(searchText)")
     }
     
 }
