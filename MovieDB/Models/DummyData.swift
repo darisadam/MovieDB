@@ -7,11 +7,15 @@
 
 import Foundation
 
+//MARK: - Home
+
 struct HomeDummyData {
     static let section0Images = ["captainamerica", "captainamerica", "captainamerica"]
     static let section1Images = ["split", "rover", "greenbook", "split", "rover", "greenbook"]
     static let section2Images = ["cars", "murdermystery", "avengers", "cars", "murdermystery", "avengers"]
 }
+
+//MARK: - Popular
 
 struct PopularData {
     let imageName: String
@@ -39,6 +43,8 @@ struct PopularDummyData {
         )
     ]
 }
+
+//MARK: - Favorite
 
 struct FavoriteData {
     let imageName: String
@@ -79,4 +85,51 @@ struct FavoriteDummyData {
             isFavorited: true
         )
     ]
+}
+
+//MARK: - Detail
+
+struct MovieDetail: Hashable {
+    let movieImage: String
+    let movieTitle: String
+    let movieDuration: String
+    let movieQuality: String
+    let movieGenre: [MovieGenre]
+    let movieDescription: String
+    let movieCast: [MovieCast]
+    
+}
+
+struct MovieGenre: Hashable {
+    let genreName: String
+}
+
+struct MovieCast: Hashable {
+    let actorImage: String
+    let actorName: String
+}
+
+struct MovieDetailDummyData {
+    static let genres = [
+        MovieGenre(genreName: "Adventure"),
+        MovieGenre(genreName: "Action"),
+        MovieGenre(genreName: "Comedy")
+    ]
+    
+    static let cast = [
+        MovieCast(actorImage: "dave", actorName: "Dave Franco"),
+        MovieCast(actorImage: "jesse", actorName: "Jesse Eisenberg"),
+        MovieCast(actorImage: "woody", actorName: "Woody Harrelson"),
+        MovieCast(actorImage: "daniel", actorName: "Daniel Radcliffe")
+    ]
+    
+    static let movie = MovieDetail(
+        movieImage: "nowyouseeme2",
+        movieTitle: "Now You See Me 2",
+        movieDuration: "1h 29m",
+        movieQuality: "HD",
+        movieGenre: genres,
+        movieDescription: "Eighteen months after outwitting the FBI, the fugitive Four Horsemen – J. Daniel Atlas, Merritt McKinney, Jack Wilder, and new member Lula May – await orders from the Eye, the secret society of magicians. The Horsemen’s handler, FBI Special Agent Dylan Rhodes, delivers their instructions: the Horsemen are to expose corrupt tech CEO Owen Case, whose latest cell phone will secretly collect users’ personal data to sell on the black market. In New York City, the Horsemen hijack the phone’s launch, but are interrupted by a mysterious figure who reveals to the public that Jack faked his death, and that Dylan is working with the Horsemen. Dylan eludes the FBI as the Horsemen escape down a construction chute only to find themselves in Macau.",
+        movieCast: cast
+    )
 }
