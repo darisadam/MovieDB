@@ -8,7 +8,7 @@
 import UIKit
 
 class PopularCollectionViewCell: UICollectionViewCell {
-
+    
     private let movieImageView: UIImageView = {
         let imageView = UIImageView()
         imageView.image = UIImage(named: "mz1")

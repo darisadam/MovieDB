@@ -9,32 +9,32 @@ import UIKit
 
 class PopularViewHeader: UICollectionReusableView {
     
-    private let headerLabel = UILabel()
+    private let headerLabel: UILabel = {
+        let label = UILabel()
+        label.translatesAutoresizingMaskIntoConstraints = false
+        label.textColor = mdbWhite
+        label.font = UIFont.systemFont(ofSize: 16, weight: .regular)
+        return label
+    }()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        setupHeader()
         addSubview(headerLabel)
-    }
-    
-    override func layoutSubviews() {
-        super.layoutSubviews()
-        headerLabel.frame = bounds
+        
+        NSLayoutConstraint.activate([
+            headerLabel.topAnchor.constraint(equalTo: topAnchor, constant: 20),
+            headerLabel.leadingAnchor.constraint(equalTo: leadingAnchor, constant: 20),
+            headerLabel.bottomAnchor.constraint(equalTo: bottomAnchor)
+        ])
     }
     
     func configure(with title: String) {
         headerLabel.text = title
-        headerLabel.textColor = mdbWhite
-        headerLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
-    }
-    
-    func setupHeader() {
-        headerLabel.textColor = mdbWhite
-        headerLabel.font = UIFont.systemFont(ofSize: 16, weight: .regular)
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
+    
 }
