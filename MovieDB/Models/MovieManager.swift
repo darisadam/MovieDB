@@ -10,7 +10,7 @@ import Foundation
 class MovieManager {
     static let shared = MovieManager()
     private let baseURL = "https://api.themoviedb.org/3"
-    private let apiKey = "YOUR_API_KEY" // Replace with your actual API key
+    private let apiKey = "123abc"
     
     func fetchPopularMovies(page: Int = 1, completion: @escaping (Result<MovieResponse, Error>) -> Void) {
         let urlString = "\(baseURL)/movie/popular?api_key=\(apiKey)&language=en-US&page=\(page)"
@@ -21,20 +21,18 @@ class MovieManager {
         }
         
         URLSession.shared.dataTask(with: url) { (data, response, error) in
-            // Check for network errors
+
             if let error = error {
                 completion(.failure(error))
                 return
             }
             
-            // Check for valid HTTP response
             guard let httpResponse = response as? HTTPURLResponse,
                   (200...299).contains(httpResponse.statusCode) else {
                 completion(.failure(NSError(domain: "Invalid Response", code: 0)))
                 return
             }
             
-            // Check for data
             guard let data = data else {
                 completion(.failure(NSError(domain: "No Data", code: 0)))
                 return
@@ -47,6 +45,7 @@ class MovieManager {
             } catch {
                 completion(.failure(error))
             }
-        }.resume()
+        }
+        .resume()
     }
 }

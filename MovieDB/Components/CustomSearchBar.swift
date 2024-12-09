@@ -11,7 +11,7 @@ class CustomSearchBar: UIView {
     
     // MARK: - Properties
     
-    private let searchTextField: UITextField = {
+    private let searchTextField: UITextField = { // TextField on search bar
         let textField = UITextField()
         textField.translatesAutoresizingMaskIntoConstraints = false
         textField.attributedPlaceholder = NSAttributedString(string: "Search", attributes: [NSAttributedString.Key.foregroundColor : mdbWhite])
@@ -31,7 +31,7 @@ class CustomSearchBar: UIView {
         return textField
     }()
     
-    private let magnifyButton: UIButton = {
+    private let magnifyButton: UIButton = { // Search button on search bar
         let button = UIButton(type: .system)
         button.translatesAutoresizingMaskIntoConstraints = false
         button.setImage(UIImage(systemName: "magnifyingglass"), for: .normal)
@@ -39,7 +39,7 @@ class CustomSearchBar: UIView {
         return button
     }()
     
-    private let dividerLine: UIView = {
+    private let dividerLine: UIView = { // Line under search bar
         let line = UIView()
         line.translatesAutoresizingMaskIntoConstraints = false
         line.backgroundColor = mdbWhite.withAlphaComponent(0.4)
@@ -60,7 +60,7 @@ class CustomSearchBar: UIView {
     
     // MARK: - Setup Methods
     
-    private func setupView() {
+    private func setupView() { // Setup the search bar
         translatesAutoresizingMaskIntoConstraints = false
         backgroundColor = .clear
         
@@ -71,7 +71,7 @@ class CustomSearchBar: UIView {
         setupConstraints()
     }
     
-    private func setupConstraints() {
+    private func setupConstraints() { // Setup constraint for the search bar
         NSLayoutConstraint.activate([
             
             widthAnchor.constraint(equalToConstant: 360),
@@ -96,11 +96,11 @@ class CustomSearchBar: UIView {
     
     // MARK: - Public Methods
     
-    func setSearchButtonAction(target: Any?, action: Selector) {
+    func setSearchButtonAction(target: Any?, action: Selector) { // Function when user click the search button
         magnifyButton.addTarget(target, action: action, for: .touchUpInside)
     }
     
-    func getSearchText() -> String? {
+    func getSearchText() -> String? { // Get output from TextField when user click the search button
         return searchTextField.text
     }
     
