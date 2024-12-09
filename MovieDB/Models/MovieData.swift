@@ -7,29 +7,53 @@
 
 import Foundation
 
-struct MovieData: Identifiable, Decodable {
+struct MovieResponse: Decodable {
+    let results: [Movie]
+    let totalPages: Int
+    let totalResults: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case results
+        case totalPages = "total_pages"
+        case totalResults = "total_results"
+    }
+}
+
+struct Movie: Identifiable, Decodable {
     let id: Int
     let title: String
-    let backdrop_path: String
-    let original_title: String
-    let poster_path: String
+    let backdropPath: String?
+    let originalTitle: String
+    let posterPath: String?
     let overview: String
-    let isFavorite: Bool
-    let runtime: Int
-    let homepage: String
-    let belongs_to_collection: BelongsToCollection
-    let genres: [Genres]
-}
-
-struct BelongsToCollection: Identifiable, Decodable {
-    let id: Int
-    let name: String
-    let poster_path: String
-    let backdrop_path: String
-}
-
-struct Genres: Identifiable, Decodable {
-    let id: Int
-    let name: String
+    let popularity: Double
+    let releaseDate: String
+    let genreIds: [Int]
+    let voteAverage: Double
+    let voteCount: Int
+    
+    enum CodingKeys: String, CodingKey {
+        case id
+        case title
+        case backdropPath = "backdrop_path"
+        case originalTitle = "original_title"
+        case posterPath = "poster_path"
+        case overview
+        case popularity
+        case releaseDate = "release_date"
+        case genreIds = "genre_ids"
+        case voteAverage = "vote_average"
+        case voteCount = "vote_count"
+    }
+    
+    var fullPosterPath: URL? {
+        guard let posterPath = posterPath else { return nil }
+        return URL(string: "https://image.tmdb.org/t/p/w500\(posterPath)")
+    }
+    
+    var fullBackdropPath: URL? {
+        guard let backdropPath = backdropPath else { return nil }
+        return URL(string: "https://image.tmdb.org/t/p/w500\(backdropPath)")
+    }
 }
 

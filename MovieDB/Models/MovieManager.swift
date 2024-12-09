@@ -7,51 +7,46 @@
 
 import Foundation
 
-struct MovieManager {
-    let movieURL = "https://api.themoviedb.org/3/movie/100?api_key=#"
-    let apiKey  = ""
+class MovieManager {
+    static let shared = MovieManager()
+    private let baseURL = "https://api.themoviedb.org/3"
+    private let apiKey = "YOUR_API_KEY" // Replace with your actual API key
     
-    var delegate: MovieManagerDelegate?
-    
-    func fetchMovies() {
-        //
-    }
-    
-    func performRequest(with urlString: String) {
+    func fetchPopularMovies(page: Int = 1, completion: @escaping (Result<MovieResponse, Error>) -> Void) {
+        let urlString = "\(baseURL)/movie/popular?api_key=\(apiKey)&language=en-US&page=\(page)"
         
-        if let url = URL(string: movieURL) {
-            
-            let session = URLSession(configuration: .default)
-            
-            let task = session.dataTask(with: url) { (data, response, error) in
-                if error != nil {
-                    self.delegate?.didFailWithError(error!)
-                }
-                
-                if let safeData = data {
-                    if let movies = self.parseJSON(safeData) {
-                        self.delegate?.didUpdateMovies(self, movies: movies)
-                    }
-                }
+        guard let url = URL(string: urlString) else {
+            completion(.failure(NSError(domain: "Invalid URL", code: 0)))
+            return
+        }
+        
+        URLSession.shared.dataTask(with: url) { (data, response, error) in
+            // Check for network errors
+            if let error = error {
+                completion(.failure(error))
+                return
             }
             
-            task.resume()
-        }
-    }
-    
-    func parseJSON(_ movieData: Data) -> MovieModel? {
-        let decoder = JSONDecoder()
-        
-        do {
-            let decodedData = try decoder.decode(MovieData.self, from: movieData)
-            let id = decodedData.id
-            let title = decodedData.title
+            // Check for valid HTTP response
+            guard let httpResponse = response as? HTTPURLResponse,
+                  (200...299).contains(httpResponse.statusCode) else {
+                completion(.failure(NSError(domain: "Invalid Response", code: 0)))
+                return
+            }
             
-            let movie = MovieModel(id: id, title: title)
-            return movie
-        } catch {
-            delegate?.didFailWithError(error)
-            return nil
-        }
+            // Check for data
+            guard let data = data else {
+                completion(.failure(NSError(domain: "No Data", code: 0)))
+                return
+            }
+            
+            do {
+                let decoder = JSONDecoder()
+                let movieResponse = try decoder.decode(MovieResponse.self, from: data)
+                completion(.success(movieResponse))
+            } catch {
+                completion(.failure(error))
+            }
+        }.resume()
     }
 }
