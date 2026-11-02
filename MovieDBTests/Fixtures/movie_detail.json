@@ -1,0 +1,49 @@
+{
+  "id": 291805,
+  "title": "Now You See Me 2",
+  "original_language": "en",
+  "overview": "The Four Horsemen resurface and are forced into one more impossible heist.",
+  "poster_path": "/hU0E130tsGdsYa4K9lc3Xrn5Wyt.jpg",
+  "backdrop_path": "/zrAO2OOa6s6dQMQ7zsUbDyIBrAP.jpg",
+  "release_date": "2016-06-02",
+  "runtime": 129,
+  "tagline": "You haven't seen anything yet.",
+  "status": "Released",
+  "budget": 90000000,
+  "revenue": 334901337,
+  "vote_average": 6.8,
+  "vote_count": 11000,
+  "genres": [
+    {"id": 28, "name": "Action"},
+    {"id": 35, "name": "Comedy"},
+    {"id": 53, "name": "Thriller"}
+  ],
+  "spoken_languages": [
+    {"iso_639_1": "en", "english_name": "English", "name": "English"},
+    {"iso_639_1": "zh", "english_name": "Mandarin", "name": "普通话"}
+  ],
+  "credits": {
+    "cast": [
+      {"id": 10980, "name": "Daniel Radcliffe", "character": "Walter Mabry", "order": 6, "profile_path": "/iPg0J9UzAlPj1fLEJNllpW9IhGe.jpg"},
+      {"id": 44735, "name": "Jesse Eisenberg", "character": "J. Daniel Atlas", "order": 0, "profile_path": "/jwH6oQgyzQiG4XYbDJsKzkXHgVM.jpg"},
+      {"id": 57755, "name": "Woody Harrelson", "character": "Merritt McKinney", "order": 1, "profile_path": null},
+      {"id": 0, "name": "Broken Row", "order": 2}
+    ]
+  },
+  "videos": {
+    "results": [
+      {"key": "abcFeat_01", "name": "Behind the Magic", "site": "YouTube", "type": "Featurette", "official": true, "published_at": "2016-05-01T10:00:00.000Z"},
+      {"key": "vimeo123", "name": "Vimeo clip", "site": "Vimeo", "type": "Trailer", "official": true},
+      {"key": "teaser_old", "name": "Teaser", "site": "YouTube", "type": "Teaser", "official": true, "published_at": "2015-12-01T10:00:00.000Z"},
+      {"key": "fan_trailer", "name": "Fan Trailer", "site": "YouTube", "type": "Trailer", "official": false, "published_at": "2016-06-01T10:00:00.000Z"},
+      {"key": "official_tr", "name": "Official Trailer", "site": "YouTube", "type": "Trailer", "official": true, "published_at": "2016-02-01T10:00:00.000Z"}
+    ]
+  },
+  "recommendations": {
+    "page": 1,
+    "results": [
+      {"id": 75656, "title": "Now You See Me", "release_date": "2013-05-29", "vote_average": 7.3, "vote_count": 15000},
+      {"id": 381288, "title": "Split", "release_date": "2016-09-26", "vote_average": 7.3, "vote_count": 17000}
+    ]
+  }
+}
