@@ -46,8 +46,12 @@ NS_ASSUME_NONNULL_END
 #if DEBUG
 #define MDBLogDebug(category, ...) MDBLogWrite((category), MDBLogLevelDebug, __FILE_NAME__, __LINE__, __VA_ARGS__)
 #else
-#define MDBLogDebug(category, ...) \
-  do {                             \
+// Compiled out, but the arguments are still type-checked so Release builds don't flag log-only variables as unused.
+#define MDBLogDebug(category, ...)                                                     \
+  do {                                                                                 \
+    if (0) {                                                                           \
+      MDBLogWrite((category), MDBLogLevelDebug, __FILE_NAME__, __LINE__, __VA_ARGS__); \
+    }                                                                                  \
   } while (0)
 #endif
 #define MDBLogInfo(category, ...) MDBLogWrite((category), MDBLogLevelInfo, __FILE_NAME__, __LINE__, __VA_ARGS__)
