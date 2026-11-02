@@ -14,7 +14,7 @@ MDBLogFault(MDBLogCategoryUI, @"This should never happen");
 ```
 
 - **Categories:** `app`, `network`, `ui`, `persistence`, `coordinator`, `metrics`.
-- **Console.app:** filter with `subsystem:com.darisadam.MovieDB`, and add `category:network` to narrow it down.
+- **Console.app:** filter with `subsystem:com.adamappstudio.moviedb`, and add `category:network` to narrow it down.
 - **Debug builds** print the message in full. Release builds mark it private, so user data stays out of sysdiagnose.
 - **Every request** logs a one line summary like `200 GET /3/movie/popular?page=1 182 ms 12.4 KB`. In Debug it also logs a cURL command with the token redacted, so you can replay a call in Terminal.
 
