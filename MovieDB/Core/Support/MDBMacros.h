@@ -9,5 +9,5 @@
 #define MDBAssertMainThread() NSCAssert([NSThread isMainThread], @"Expected to run on the main thread")
 
 NS_INLINE BOOL MDBIsRunningUnitTests(void) {
-    return NSClassFromString(@"XCTestCase") != nil;
+  return NSClassFromString(@"XCTestCase") != nil;
 }

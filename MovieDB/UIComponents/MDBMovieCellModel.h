@@ -40,8 +40,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (instancetype)modelWithFavorite:(MDBFavoriteMovie *)favorite imageURLs:(MDBImageURLBuilder *)imageURLs;
 
+/// genreNames maps genre id to name, as published by MDBGenreProviding.
 + (NSArray<MDBMovieCellModel *> *)modelsWithMovies:(NSArray<MDBMovie *> *)movies
-                                  genreNamesProvider:(NSArray<NSString *> * (^)(NSArray<NSNumber *> *genreIDs))genreNamesProvider
+                                        genreNames:(nullable NSDictionary<NSNumber *, NSString *> *)genreNames
                                          imageURLs:(MDBImageURLBuilder *)imageURLs;
 
 - (instancetype)init NS_UNAVAILABLE;

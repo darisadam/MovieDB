@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 FOUNDATION_EXPORT NSString *const MDBFavoriteEntityName;
 
 typedef NS_ENUM(NSInteger, MDBCoreDataStoreType) {
-    MDBCoreDataStoreTypeSQLite = 0,
-    MDBCoreDataStoreTypeInMemory,
+  MDBCoreDataStoreTypeSQLite = 0,
+  MDBCoreDataStoreTypeInMemory,
 };
 
 @interface MDBCoreDataStack : NSObject

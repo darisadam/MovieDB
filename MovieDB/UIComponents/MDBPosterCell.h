@@ -10,9 +10,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, MDBPosterCellStyle) {
-    MDBPosterCellStylePlain,   // poster only, Home rows
-    MDBPosterCellStyleTitled,  // poster, title and year, grids
-    MDBPosterCellStyleDated,   // poster and release date, Upcoming row
+  MDBPosterCellStylePlain,   // poster only, Home rows
+  MDBPosterCellStyleTitled,  // poster, title and year, grids
+  MDBPosterCellStyleDated,   // poster and release date, Upcoming row
 };
 
 @interface MDBPosterCell : UICollectionViewCell

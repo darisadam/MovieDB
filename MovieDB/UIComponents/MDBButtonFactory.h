@@ -8,9 +8,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 typedef NS_ENUM(NSInteger, MDBButtonStyle) {
-    MDBButtonStylePrimary,    // yellow fill, dark text
-    MDBButtonStyleSecondary,  // outline, white text, yellow icon
-    MDBButtonStyleFavorited,  // tinted yellow, used when a movie is saved
+  MDBButtonStylePrimary,    // yellow fill, dark text
+  MDBButtonStyleSecondary,  // outline, white text, yellow icon
+  MDBButtonStyleFavorited,  // tinted yellow, used when a movie is saved
 };
 
 @interface MDBButtonFactory : NSObject

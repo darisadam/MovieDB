@@ -31,14 +31,12 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) MDBCoreDataStack *coreDataStack;
 @property (nonatomic, readonly) id<MDBFavoritesStore> favoritesStore;
 @property (nonatomic, readonly) MDBMetricsSubscriber *metrics;
-@property (nonatomic, readonly) NSNotificationCenter *notificationCenter;
 
 + (instancetype)liveDependencies;
 
 - (instancetype)initWithConfiguration:(MDBTMDBConfiguration *)configuration
                          userDefaults:(NSUserDefaults *)userDefaults
-                   notificationCenter:(NSNotificationCenter *)notificationCenter
-                       coreDataStack:(MDBCoreDataStack *)coreDataStack NS_DESIGNATED_INITIALIZER;
+                        coreDataStack:(MDBCoreDataStack *)coreDataStack NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
 @end
