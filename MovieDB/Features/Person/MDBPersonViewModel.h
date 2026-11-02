@@ -4,17 +4,16 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MDBLoadState.h"
 #import "MDBMovieService.h"
 
 @class MDBImageURLBuilder;
 @class MDBMovieCellModel;
-@class MDBPerson;
+@class MDBObservable<ObjectType>;
+@class MDBScreenState<ContentType>;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MDBFilmographyRow : NSObject
-@property (nonatomic, readonly) NSInteger movieID;
 @property (nonatomic, copy, readonly) NSString *yearText;
 @property (nonatomic, copy, readonly) NSString *title;
 @property (nonatomic, copy, readonly) NSString *roleText;
@@ -23,28 +22,40 @@ NS_ASSUME_NONNULL_BEGIN
 - (instancetype)init NS_UNAVAILABLE;
 @end
 
-@interface MDBPersonViewModel : NSObject
+@interface MDBPersonFact : NSObject
+@property (nonatomic, copy, readonly) NSString *title;
+@property (nonatomic, copy, readonly) NSString *value;
+- (instancetype)initWithTitle:(NSString *)title value:(NSString *)value NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_UNAVAILABLE;
+@end
 
-@property (nonatomic, readonly) MDBLoadState state;
-@property (nonatomic, readonly, nullable) NSError *error;
+@interface MDBPersonContent : NSObject
 @property (nonatomic, copy, readonly) NSString *name;
 @property (nonatomic, copy, readonly, nullable) NSURL *profileURL;
 @property (nonatomic, copy, readonly) NSString *departmentText;
-/// Label and value pairs like Born, Place of birth.
-@property (nonatomic, copy, readonly) NSArray<NSArray<NSString *> *> *facts;
+@property (nonatomic, copy, readonly) NSArray<MDBPersonFact *> *facts;
 @property (nonatomic, copy, readonly) NSString *biography;
 @property (nonatomic, copy, readonly) NSArray<MDBMovieCellModel *> *knownFor;
 @property (nonatomic, copy, readonly) NSArray<MDBFilmographyRow *> *filmography;
+@end
 
-@property (nonatomic, copy, nullable) void (^onChange)(void);
+typedef id<MDBPersonProviding, MDBGenreProviding> MDBPersonServices;
+
+@interface MDBPersonViewModel : NSObject
+
+/// While loading the content only has the name we were opened with.
+@property (nonatomic, readonly) MDBObservable<MDBScreenState<MDBPersonContent *> *> *state;
 
 - (instancetype)initWithPersonID:(NSInteger)personID
                             name:(NSString *)name
-                    movieService:(id<MDBMovieService>)movieService
+                        services:(MDBPersonServices)services
                        imageURLs:(MDBImageURLBuilder *)imageURLs NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
 - (void)load;
+
+/// Testing hook for the age shown next to the birthday.
+@property (nonatomic, copy) NSDate *now;
 
 @end
 

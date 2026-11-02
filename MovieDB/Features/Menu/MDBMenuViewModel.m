@@ -6,115 +6,98 @@
 #import "MDBMenuViewModel.h"
 #import "MDBAPIError.h"
 #import "MDBGenre.h"
+#import "MDBObservable.h"
 #import "MDBPreferences.h"
+#import "MDBScreenState.h"
 
 @interface MDBMenuViewModel ()
-@property (nonatomic, readwrite) MDBLoadState genresState;
-@property (nonatomic, readwrite, nullable) NSError *genresError;
-@property (nonatomic, copy, readwrite) NSArray<MDBGenre *> *genres;
-@property (nonatomic, readonly) id<MDBMovieService> movieService;
-@property (nonatomic, readonly) MDBPreferences *preferences;
+@property (nonatomic, readonly) MDBSubject<MDBScreenState<NSArray<MDBGenre *> *> *> *genresSubject;
+@property (nonatomic, readwrite) MDBObservable<NSNumber *> *favoritesCount;
+@property (nonatomic, readonly) id<MDBGenreProviding> genreProvider;
+@property (nonatomic, readonly) MDBPreferences *preferenceStore;
 @property (nonatomic, readonly) id<MDBFavoritesStore> favoritesStore;
-@property (nonatomic, readonly) NSNotificationCenter *notificationCenter;
+@property (nonatomic, readonly) MDBDisposeBag *bag;
 @property (nonatomic, nullable) id<MDBCancellable> genresTask;
-@property (nonatomic, copy) NSArray *observers;
 @end
 
 @implementation MDBMenuViewModel
 
-- (instancetype)initWithMovieService:(id<MDBMovieService>)movieService
-                         preferences:(MDBPreferences *)preferences
-                      favoritesStore:(id<MDBFavoritesStore>)favoritesStore
-                  notificationCenter:(NSNotificationCenter *)notificationCenter {
-    self = [super init];
-    if (self) {
-        _movieService = movieService;
-        _preferences = preferences;
-        _favoritesStore = favoritesStore;
-        _notificationCenter = notificationCenter;
-        _genres = @[];
+- (instancetype)initWithGenreProvider:(id<MDBGenreProviding>)genreProvider
+                          preferences:(MDBPreferences *)preferences
+                       favoritesStore:(id<MDBFavoritesStore>)favoritesStore {
+  self = [super init];
+  if (self) {
+    _genreProvider = genreProvider;
+    _preferenceStore = preferences;
+    _favoritesStore = favoritesStore;
+    _bag = [[MDBDisposeBag alloc] init];
+    _genresSubject = [[MDBSubject alloc] initWithValue:[MDBScreenState idle]];
+    _favoritesCount = [[favoritesStore.favorites map:^id(NSArray *favorites) {
+      return @(favorites.count);
+    }] distinctUntilChanged];
 
-        __weak typeof(self) weakSelf = self;
-        id favorites = [notificationCenter addObserverForName:MDBFavoritesDidChangeNotification
-                                                       object:nil
-                                                        queue:[NSOperationQueue mainQueue]
-                                                   usingBlock:^(NSNotification *note) {
-            [weakSelf notifyChange];
-        }];
-        id preferencesObserver = [notificationCenter addObserverForName:MDBPreferencesDidChangeNotification
-                                                                 object:nil
-                                                                  queue:[NSOperationQueue mainQueue]
-                                                             usingBlock:^(NSNotification *note) {
-            // Genre names come back translated, so fetch them again.
+    // Genre names come back translated, so fetch them again after a language change.
+    __weak typeof(self) weakSelf = self;
+    [_bag addDisposable:[[preferences.current skip:1] subscribe:^(id value) {
             [weakSelf reloadGenres];
-        }];
-        _observers = @[favorites, preferencesObserver];
-    }
-    return self;
+          }]];
+  }
+  return self;
 }
 
 - (void)dealloc {
-    [_genresTask cancel];
-    for (id observer in _observers) {
-        [_notificationCenter removeObserver:observer];
-    }
+  [_genresTask cancel];
+}
+
+- (MDBObservable<MDBScreenState<NSArray<MDBGenre *> *> *> *)genresState {
+  return self.genresSubject;
+}
+
+- (MDBObservable<MDBPreferenceSnapshot *> *)preferences {
+  return self.preferenceStore.current;
+}
+
+- (NSArray<MDBPreferenceOption *> *)regionOptions {
+  return MDBPreferences.regionOptions;
+}
+
+- (NSArray<MDBPreferenceOption *> *)languageOptions {
+  return MDBPreferences.languageOptions;
 }
 
 - (void)loadIfNeeded {
-    if (self.genresState == MDBLoadStateIdle || self.genresState == MDBLoadStateFailed) {
-        [self reloadGenres];
-    }
+  MDBLoadState phase = self.genresSubject.value.phase;
+  if (phase == MDBLoadStateIdle || phase == MDBLoadStateFailed) {
+    [self reloadGenres];
+  }
 }
 
 - (void)reloadGenres {
-    [self.genresTask cancel];
-    self.genresState = MDBLoadStateLoading;
-    self.genresError = nil;
-    [self notifyChange];
-
-    __weak typeof(self) weakSelf = self;
-    self.genresTask = [self.movieService fetchGenresWithCompletion:^(NSArray<MDBGenre *> *genres, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        if (!strongSelf || error.mdb_isCancelled) {
-            return;
-        }
-        if (genres) {
-            strongSelf.genres = genres;
-            strongSelf.genresState = genres.count > 0 ? MDBLoadStateLoaded : MDBLoadStateEmpty;
-        } else {
-            strongSelf.genresState = MDBLoadStateFailed;
-            strongSelf.genresError = error;
-        }
-        [strongSelf notifyChange];
-    }];
+  [self.genresTask cancel];
+  MDBSubject<MDBScreenState<NSArray<MDBGenre *> *> *> *subject = self.genresSubject;
+  [subject send:[MDBScreenState loadingWithContent:subject.value.content]];
+  self.genresTask = [self.genreProvider fetchGenresWithCompletion:^(NSArray<MDBGenre *> *genres, NSError *error) {
+    if (error.mdb_isCancelled) {
+      return;
+    }
+    if (!genres) {
+      [subject send:[MDBScreenState failedWithError:error content:nil]];
+    } else {
+      [subject send:genres.count > 0 ? [MDBScreenState loadedWithContent:genres] : [MDBScreenState empty]];
+    }
+  }];
 }
 
-- (NSString *)regionTitle { return [self.preferences regionTitle]; }
-- (NSString *)regionCode { return self.preferences.regionCode; }
-- (NSString *)languageTitle { return [self.preferences languageTitle]; }
-- (NSString *)languageCode { return self.preferences.languageCode; }
-- (NSArray<MDBPreferenceOption *> *)regionOptions { return MDBPreferences.regionOptions; }
-- (NSArray<MDBPreferenceOption *> *)languageOptions { return MDBPreferences.languageOptions; }
-- (NSUInteger)favoritesCount { return [self.favoritesStore favoritesCount]; }
-
 - (void)selectRegionCode:(NSString *)code {
-    self.preferences.regionCode = code;
-    [self notifyChange];
+  self.preferenceStore.regionCode = code;
 }
 
 - (void)selectLanguageCode:(NSString *)code {
-    self.preferences.languageCode = code;
-    [self notifyChange];
+  self.preferenceStore.languageCode = code;
 }
 
 - (void)clearFavorites {
-    [self.favoritesStore removeAllFavoritesWithCompletion:nil];
-}
-
-- (void)notifyChange {
-    if (self.onChange) {
-        self.onChange();
-    }
+  [self.favoritesStore removeAllFavoritesWithCompletion:nil];
 }
 
 @end
