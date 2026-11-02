@@ -24,10 +24,20 @@ jobs:
       - name: Scan
         run: gitleaks detect --no-banner --redact --config .gitleaks.toml --log-opts="${{ github.event_name == 'pull_request' && format('{0}..{1}', github.event.pull_request.base.sha, github.event.pull_request.head.sha) || '-1' }}"
 
+  format:
+    name: Format check
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install clang-format
+        run: brew install clang-format
+      - name: Check
+        run: ./Scripts/format.sh --check
+
   test:
     name: Build and test
     runs-on: macos-latest
-    needs: secrets
+    needs: [secrets, format]
     steps:
       - uses: actions/checkout@v4
       - name: Install tools

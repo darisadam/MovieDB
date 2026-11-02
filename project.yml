@@ -2,14 +2,14 @@
 name: MovieDB
 
 options:
-  bundleIdPrefix: com.darisadam
+  bundleIdPrefix: com.adamappstudio
   deploymentTarget:
     iOS: "15.0"
   developmentLanguage: en
   createIntermediateGroups: true
   groupSortPosition: top
-  indentWidth: 4
-  tabWidth: 4
+  indentWidth: 2
+  tabWidth: 2
   usesTabs: false
 
 configs:
@@ -24,6 +24,9 @@ settings:
   base:
     MARKETING_VERSION: "1.0.0"
     CURRENT_PROJECT_VERSION: "1"
+    # Team id is public information, it is printed in every signed app.
+    DEVELOPMENT_TEAM: Q99UJS4WY6
+    CODE_SIGN_STYLE: Automatic
 
 targets:
   MovieDB:
@@ -35,7 +38,7 @@ targets:
           - "**/.DS_Store"
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.darisadam.MovieDB
+        PRODUCT_BUNDLE_IDENTIFIER: com.adamappstudio.moviedb
         PRODUCT_NAME: MovieDB
         INFOPLIST_FILE: MovieDB/App/Info.plist
         ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
@@ -61,7 +64,7 @@ targets:
       - target: MovieDB
     settings:
       base:
-        PRODUCT_BUNDLE_IDENTIFIER: com.darisadam.MovieDBTests
+        PRODUCT_BUNDLE_IDENTIFIER: com.adamappstudio.moviedb.tests
         # XCTest itself needs iOS 17, the app target stays at 15.
         IPHONEOS_DEPLOYMENT_TARGET: "17.0"
         GENERATE_INFOPLIST_FILE: YES
