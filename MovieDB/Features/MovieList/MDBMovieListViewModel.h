@@ -6,38 +6,31 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MDBLoadState.h"
 #import "MDBMovieService.h"
 
 @class MDBGenre;
 @class MDBImageURLBuilder;
-@class MDBMovieCellModel;
+@class MDBObservable<ObjectType>;
+@class MDBPagedItems;
+@class MDBScreenState<ContentType>;
 
 NS_ASSUME_NONNULL_BEGIN
+
+typedef id<MDBMovieListProviding, MDBGenreProviding> MDBMovieListServices;
 
 @interface MDBMovieListViewModel : NSObject
 
 @property (nonatomic, copy, readonly) NSString *title;
 @property (nonatomic, readonly) BOOL showsSortOptions;
-@property (nonatomic, readonly) MDBDiscoverSort sort;
 @property (nonatomic, copy, readonly) NSArray<NSString *> *sortTitles;
-
-@property (nonatomic, readonly) MDBLoadState state;
-@property (nonatomic, readonly, nullable) NSError *error;
-@property (nonatomic, copy, readonly) NSArray<MDBMovieCellModel *> *items;
-@property (nonatomic, readonly) NSInteger totalResults;
-@property (nonatomic, readonly, getter=isLoadingMore) BOOL loadingMore;
-
-@property (nonatomic, copy, nullable) void (^onChange)(void);
+/// NSNumber wrapping MDBDiscoverSort.
+@property (nonatomic, readonly) MDBObservable<NSNumber *> *sort;
+@property (nonatomic, readonly) MDBObservable<MDBScreenState<MDBPagedItems *> *> *state;
 
 - (instancetype)initWithListKind:(MDBMovieListKind)kind
-                    movieService:(id<MDBMovieService>)movieService
+                        services:(MDBMovieListServices)services
                        imageURLs:(MDBImageURLBuilder *)imageURLs;
-
-- (instancetype)initWithGenre:(MDBGenre *)genre
-                 movieService:(id<MDBMovieService>)movieService
-                    imageURLs:(MDBImageURLBuilder *)imageURLs;
-
+- (instancetype)initWithGenre:(MDBGenre *)genre services:(MDBMovieListServices)services imageURLs:(MDBImageURLBuilder *)imageURLs;
 - (instancetype)init NS_UNAVAILABLE;
 
 - (void)loadFirstPage;

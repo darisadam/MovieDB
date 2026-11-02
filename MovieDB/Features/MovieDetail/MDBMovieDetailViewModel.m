@@ -15,247 +15,208 @@
 #import "MDBMovie.h"
 #import "MDBMovieCellModel.h"
 #import "MDBMovieDetail.h"
+#import "MDBObservable.h"
+#import "MDBScreenState.h"
 #import "MDBVideo.h"
 
 @implementation MDBMovieFact
 
 - (instancetype)initWithTitle:(NSString *)title value:(NSString *)value {
-    self = [super init];
-    if (self) {
-        _title = [title copy];
-        _value = [value copy];
-    }
-    return self;
+  self = [super init];
+  if (self) {
+    _title = [title copy];
+    _value = [value copy];
+  }
+  return self;
+}
+
+@end
+
+@interface MDBMovieDetailContent ()
+@property (nonatomic, copy, readwrite) NSString *title;
+@property (nonatomic, copy, readwrite, nullable) NSURL *backdropURL;
+@property (nonatomic, copy, readwrite) NSString *metaText;
+@property (nonatomic, copy, readwrite, nullable) NSString *ratingText;
+@property (nonatomic, copy, readwrite, nullable) NSString *tagline;
+@property (nonatomic, copy, readwrite) NSString *overview;
+@property (nonatomic, copy, readwrite) NSArray<NSString *> *genreNames;
+@property (nonatomic, copy, readwrite) NSArray<MDBMovieFact *> *facts;
+@property (nonatomic, copy, readwrite) NSArray<MDBCastCellModel *> *cast;
+@property (nonatomic, copy, readwrite) NSArray<MDBMovieCellModel *> *recommendations;
+@property (nonatomic, copy, readwrite) NSArray<MDBVideo *> *videos;
+@property (nonatomic, readwrite, getter=isComplete) BOOL complete;
+@end
+
+@implementation MDBMovieDetailContent
+
+- (BOOL)hasTrailer {
+  return self.videos.count > 0;
+}
+
+/// Builds the content from the full detail when we have it, otherwise from the seed movie.
++ (instancetype)contentWithMovie:(MDBMovie *)movie
+                          detail:(nullable MDBMovieDetail *)detail
+                      genreNames:(nullable NSDictionary<NSNumber *, NSString *> *)genreNames
+                       imageURLs:(MDBImageURLBuilder *)imageURLs {
+  MDBMovieDetailContent *content = [[self alloc] init];
+  content.title = movie.title;
+  // A tall poster looks better than a cropped backdrop in this header.
+  content.backdropURL = [imageURLs URLForPath:movie.posterPath size:MDBImageSizeBackdrop]
+                            ?: [imageURLs URLForPath:movie.backdropPath size:MDBImageSizeBackdrop];
+  content.metaText = [self metaTextForMovie:movie runtime:detail.runtimeMinutes];
+  content.ratingText = movie.voteCount > 0 ? [MDBFormatting ratingStringFromVoteAverage:movie.voteAverage] : nil;
+  content.tagline = detail.tagline;
+  content.overview = movie.overview.length > 0 ? (NSString *_Nonnull)movie.overview : @"No overview yet.";
+  content.genreNames = detail ? [detail.genres valueForKey:@"name"] : MDBGenreNamesForIDs(genreNames, movie.genreIDs);
+  content.facts = detail ? [self factsForDetail:detail] : @[];
+  content.cast = [self castModelsForDetail:detail imageURLs:imageURLs];
+  content.recommendations = [MDBMovieCellModel modelsWithMovies:detail.recommendations ?: @[] genreNames:genreNames
+                                                      imageURLs:imageURLs];
+  content.videos = detail.videos ?: @[];
+  content.complete = detail != nil;
+  return content;
+}
+
++ (NSString *)metaTextForMovie:(MDBMovie *)movie runtime:(NSInteger)runtime {
+  NSMutableArray<NSString *> *parts = [NSMutableArray array];
+  NSString *year = [MDBFormatting yearStringFromDate:movie.releaseDate];
+  NSString *length = [MDBFormatting runtimeStringFromMinutes:runtime];
+  if (year.length > 0) {
+    [parts addObject:year];
+  }
+  if (length.length > 0) {
+    [parts addObject:length];
+  }
+  return [parts componentsJoinedByString:@"  ·  "];
+}
+
++ (NSArray<MDBMovieFact *> *)factsForDetail:(MDBMovieDetail *)detail {
+  NSMutableArray<MDBMovieFact *> *facts = [NSMutableArray array];
+  NSString *release = [MDBFormatting mediumDateStringFromDate:detail.movie.releaseDate];
+  [facts addObject:[[MDBMovieFact alloc] initWithTitle:@"Release" value:release.length > 0 ? release : @"TBA"]];
+  NSString *language = detail.originalLanguageName;
+  if (language.length > 0) {
+    [facts addObject:[[MDBMovieFact alloc] initWithTitle:@"Language" value:language]];
+  }
+  NSString *budget = [MDBFormatting compactCurrencyStringFromAmount:detail.budget];
+  NSString *status = detail.status;
+  if (budget.length > 0) {
+    [facts addObject:[[MDBMovieFact alloc] initWithTitle:@"Budget" value:budget]];
+  } else if (status.length > 0) {
+    [facts addObject:[[MDBMovieFact alloc] initWithTitle:@"Status" value:status]];
+  }
+  return facts;
+}
+
++ (NSArray<MDBCastCellModel *> *)castModelsForDetail:(nullable MDBMovieDetail *)detail imageURLs:(MDBImageURLBuilder *)imageURLs {
+  NSMutableArray<MDBCastCellModel *> *models = [NSMutableArray array];
+  for (MDBCastMember *member in detail.cast) {
+    NSURL *photo = [imageURLs URLForPath:member.profilePath size:MDBImageSizeProfile];
+    [models addObject:[[MDBCastCellModel alloc] initWithPersonID:member.personID name:member.name character:member.character
+                                                        photoURL:photo]];
+  }
+  return models;
 }
 
 @end
 
 @interface MDBMovieDetailViewModel ()
-@property (nonatomic, readwrite) MDBLoadState state;
-@property (nonatomic, readwrite, nullable) NSError *error;
-@property (nonatomic, readwrite, nullable) MDBMovieDetail *detail;
-@property (nonatomic, readwrite, getter=isFavorite) BOOL favorite;
 @property (nonatomic, readonly, nullable) MDBMovie *seedMovie;
-@property (nonatomic, readonly) id<MDBMovieService> movieService;
+@property (nonatomic, readonly) MDBMovieDetailServices services;
 @property (nonatomic, readonly) id<MDBFavoritesStore> favoritesStore;
 @property (nonatomic, readonly) MDBImageURLBuilder *imageURLs;
-@property (nonatomic, readonly) NSNotificationCenter *notificationCenter;
+@property (nonatomic, readonly) MDBSubject<MDBScreenState<MDBMovieDetailContent *> *> *subject;
+@property (nonatomic, readwrite) MDBObservable<NSNumber *> *isFavorite;
+@property (nonatomic, nullable) MDBMovieDetail *detail;
 @property (nonatomic, nullable) id<MDBCancellable> task;
-@property (nonatomic) id favoritesObserver;
 @end
 
 @implementation MDBMovieDetailViewModel
 
 - (instancetype)initWithMovieID:(NSInteger)movieID
-                       seedMovie:(nullable MDBMovie *)seedMovie
-                    movieService:(id<MDBMovieService>)movieService
-                  favoritesStore:(id<MDBFavoritesStore>)favoritesStore
-                       imageURLs:(MDBImageURLBuilder *)imageURLs
-              notificationCenter:(NSNotificationCenter *)notificationCenter {
-    self = [super init];
-    if (self) {
-        _movieID = movieID;
-        _seedMovie = seedMovie;
-        _movieService = movieService;
-        _favoritesStore = favoritesStore;
-        _imageURLs = imageURLs;
-        _notificationCenter = notificationCenter;
-        _favorite = [favoritesStore isFavoriteMovieID:movieID];
-
-        __weak typeof(self) weakSelf = self;
-        _favoritesObserver = [notificationCenter addObserverForName:MDBFavoritesDidChangeNotification
-                                                             object:nil
-                                                              queue:[NSOperationQueue mainQueue]
-                                                         usingBlock:^(NSNotification *note) {
-            __strong typeof(weakSelf) strongSelf = weakSelf;
-            if (!strongSelf) {
-                return;
-            }
-            BOOL isFavorite = [strongSelf.favoritesStore isFavoriteMovieID:strongSelf.movieID];
-            if (isFavorite != strongSelf.favorite) {
-                strongSelf.favorite = isFavorite;
-                [strongSelf notifyChange];
-            }
-        }];
-    }
-    return self;
+                      seedMovie:(nullable MDBMovie *)seedMovie
+                       services:(MDBMovieDetailServices)services
+                 favoritesStore:(id<MDBFavoritesStore>)favoritesStore
+                      imageURLs:(MDBImageURLBuilder *)imageURLs {
+  self = [super init];
+  if (self) {
+    _movieID = movieID;
+    _seedMovie = seedMovie;
+    _services = services;
+    _favoritesStore = favoritesStore;
+    _imageURLs = imageURLs;
+    _subject = [[MDBSubject alloc] initWithValue:[MDBScreenState loadingWithContent:[self seedContent]]];
+    _isFavorite = [[favoritesStore.favorites map:^id(NSArray<MDBFavoriteMovie *> *favorites) {
+      for (MDBFavoriteMovie *favorite in favorites) {
+        if (favorite.movieID == movieID) {
+          return @YES;
+        }
+      }
+      return @NO;
+    }] distinctUntilChanged];
+  }
+  return self;
 }
 
 - (void)dealloc {
-    [_task cancel];
-    if (_favoritesObserver) {
-        [_notificationCenter removeObserver:_favoritesObserver];
-    }
+  [_task cancel];
 }
 
-#pragma mark - Loading
+- (MDBObservable<MDBScreenState<MDBMovieDetailContent *> *> *)state {
+  return self.subject;
+}
+
+- (nullable MDBMovieDetailContent *)seedContent {
+  MDBMovie *seed = self.seedMovie;
+  if (!seed) {
+    return nil;
+  }
+  return [MDBMovieDetailContent contentWithMovie:seed detail:nil genreNames:self.services.genreNames.value
+                                       imageURLs:self.imageURLs];
+}
 
 - (void)load {
-    MDBAssertMainThread();
-    [self.task cancel];
-    self.state = MDBLoadStateLoading;
-    self.error = nil;
-    [self notifyChange];
+  MDBAssertMainThread();
+  [self.task cancel];
+  [self.subject send:[MDBScreenState loadingWithContent:self.subject.value.content ?: [self seedContent]]];
 
-    __weak typeof(self) weakSelf = self;
-    self.task = [self.movieService fetchMovieDetailWithID:self.movieID completion:^(MDBMovieDetail *detail, NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        if (!strongSelf || error.mdb_isCancelled) {
-            return;
-        }
-        if (detail) {
-            strongSelf.detail = detail;
-            strongSelf.state = MDBLoadStateLoaded;
-            MDBLogInfo(MDBLogCategoryUI, @"Detail loaded %@", detail);
-        } else {
-            strongSelf.state = MDBLoadStateFailed;
-            strongSelf.error = error;
-        }
-        [strongSelf notifyChange];
-    }];
+  __weak typeof(self) weakSelf = self;
+  self.task = [self.services fetchMovieDetailWithID:self.movieID completion:^(MDBMovieDetail *detail, NSError *error) {
+    [weakSelf handleDetail:detail error:error];
+  }];
+}
+
+- (void)handleDetail:(nullable MDBMovieDetail *)detail error:(nullable NSError *)error {
+  if (error.mdb_isCancelled) {
+    return;
+  }
+  MDBMovieDetail *loaded = detail;
+  if (!loaded) {
+    [self.subject send:[MDBScreenState failedWithError:error content:[self seedContent]]];
+    return;
+  }
+  self.detail = loaded;
+  MDBLogInfo(MDBLogCategoryUI, @"Detail loaded %@", loaded);
+  MDBMovieDetailContent *content = [MDBMovieDetailContent contentWithMovie:loaded.movie detail:loaded
+                                                                genreNames:self.services.genreNames.value
+                                                                 imageURLs:self.imageURLs];
+  [self.subject send:[MDBScreenState loadedWithContent:content]];
 }
 
 - (void)toggleFavorite {
-    MDBMovie *movie = self.detail.movie ?: self.seedMovie;
-    if (!movie) {
-        return;
-    }
-    // Flip the button right away, the store notification confirms it a moment later.
-    BOOL newValue = !self.favorite;
-    self.favorite = newValue;
-    [self notifyChange];
-
-    __weak typeof(self) weakSelf = self;
-    MDBFavoritesCompletion completion = ^(NSError *error) {
-        __strong typeof(weakSelf) strongSelf = weakSelf;
-        if (error && strongSelf) {
-            strongSelf.favorite = !newValue;
-            [strongSelf notifyChange];
-        }
-    };
-    if (newValue) {
-        [self.favoritesStore addFavoriteMovie:movie genreNames:self.genreNames completion:completion];
-    } else {
-        [self.favoritesStore removeFavoriteWithMovieID:self.movieID completion:completion];
-    }
-}
-
-#pragma mark - Display values
-
-- (MDBMovie *_Nullable)currentMovie {
-    return self.detail.movie ?: self.seedMovie;
-}
-
-- (NSString *)title {
-    return [self currentMovie].title ?: @"";
-}
-
-- (nullable NSURL *)backdropURL {
-    MDBMovie *movie = [self currentMovie];
-    // A tall poster looks better than a cropped backdrop in this header.
-    return [self.imageURLs URLForPath:movie.posterPath size:MDBImageSizeBackdrop]
-        ?: [self.imageURLs URLForPath:movie.backdropPath size:MDBImageSizeBackdrop];
-}
-
-- (NSString *)metaText {
-    NSMutableArray<NSString *> *parts = [NSMutableArray array];
-    NSString *year = [MDBFormatting yearStringFromDate:[self currentMovie].releaseDate];
-    if (year.length > 0) {
-        [parts addObject:year];
-    }
-    NSString *runtime = [MDBFormatting runtimeStringFromMinutes:self.detail.runtimeMinutes];
-    if (runtime.length > 0) {
-        [parts addObject:runtime];
-    }
-    return [parts componentsJoinedByString:@"  ·  "];
-}
-
-- (nullable NSString *)ratingText {
-    MDBMovie *movie = [self currentMovie];
-    return movie.voteCount > 0 ? [MDBFormatting ratingStringFromVoteAverage:movie.voteAverage] : nil;
-}
-
-- (nullable NSString *)tagline {
-    return self.detail.tagline;
-}
-
-- (NSString *)overview {
-    NSString *overview = [self currentMovie].overview;
-    return overview.length > 0 ? overview : @"No overview yet.";
-}
-
-- (NSArray<NSString *> *)genreNames {
-    if (self.detail) {
-        NSMutableArray<NSString *> *names = [NSMutableArray array];
-        for (MDBGenre *genre in self.detail.genres) {
-            [names addObject:genre.name];
-        }
-        return names;
-    }
-    MDBMovie *seed = self.seedMovie;
-    return seed ? [self.movieService genreNamesForIDs:seed.genreIDs] : @[];
-}
-
-- (NSArray<MDBMovieFact *> *)facts {
-    MDBMovieDetail *detail = self.detail;
-    if (!detail) {
-        return @[];
-    }
-    NSMutableArray<MDBMovieFact *> *facts = [NSMutableArray array];
-    NSString *release = [MDBFormatting mediumDateStringFromDate:detail.movie.releaseDate];
-    [facts addObject:[[MDBMovieFact alloc] initWithTitle:@"Release" value:release.length > 0 ? release : @"TBA"]];
-    NSString *language = detail.originalLanguageName;
-    if (language.length > 0) {
-        [facts addObject:[[MDBMovieFact alloc] initWithTitle:@"Language" value:language]];
-    }
-    NSString *budget = [MDBFormatting compactCurrencyStringFromAmount:detail.budget];
-    if (budget.length > 0) {
-        [facts addObject:[[MDBMovieFact alloc] initWithTitle:@"Budget" value:budget]];
-    } else {
-        NSString *status = detail.status;
-        if (status.length > 0) {
-            [facts addObject:[[MDBMovieFact alloc] initWithTitle:@"Status" value:status]];
-        }
-    }
-    return facts;
-}
-
-- (NSArray<MDBCastCellModel *> *)cast {
-    NSMutableArray<MDBCastCellModel *> *models = [NSMutableArray array];
-    for (MDBCastMember *member in self.detail.cast) {
-        [models addObject:[[MDBCastCellModel alloc] initWithPersonID:member.personID
-                                                                name:member.name
-                                                           character:member.character
-                                                            photoURL:[self.imageURLs URLForPath:member.profilePath size:MDBImageSizeProfile]]];
-    }
-    return models;
-}
-
-- (NSArray<MDBMovieCellModel *> *)recommendations {
-    id<MDBMovieService> service = self.movieService;
-    return [MDBMovieCellModel modelsWithMovies:self.detail.recommendations ?: @[]
-                            genreNamesProvider:^NSArray<NSString *> *(NSArray<NSNumber *> *genreIDs) {
-        return [service genreNamesForIDs:genreIDs];
-    }
-                                     imageURLs:self.imageURLs];
-}
-
-- (NSArray<MDBVideo *> *)videos {
-    return self.detail.videos ?: @[];
-}
-
-- (BOOL)hasTrailer {
-    return self.videos.count > 0;
+  MDBMovie *movie = self.detail.movie ?: self.seedMovie;
+  if (!movie) {
+    return;
+  }
+  if ([self.isFavorite.value boolValue]) {
+    [self.favoritesStore removeFavoriteWithMovieID:self.movieID completion:nil];
+  } else {
+    [self.favoritesStore addFavoriteMovie:movie genreNames:self.subject.value.content.genreNames ?: @[] completion:nil];
+  }
 }
 
 - (nullable NSURL *)shareURL {
-    return [NSURL URLWithString:[NSString stringWithFormat:@"https://www.themoviedb.org/movie/%ld", (long)self.movieID]];
-}
-
-- (void)notifyChange {
-    if (self.onChange) {
-        self.onChange();
-    }
+  return [NSURL URLWithString:[NSString stringWithFormat:@"https://www.themoviedb.org/movie/%ld", (long)self.movieID]];
 }
 
 @end

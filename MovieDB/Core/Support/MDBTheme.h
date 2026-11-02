@@ -13,11 +13,11 @@ NS_ASSUME_NONNULL_BEGIN
 
 + (UIColor *)mdb_colorWithHex:(uint32_t)hex alpha:(CGFloat)alpha;
 
-@property (class, nonatomic, readonly) UIColor *mdb_background;        // #25272A
-@property (class, nonatomic, readonly) UIColor *mdb_surface;           // #202123, bars and sheets
-@property (class, nonatomic, readonly) UIColor *mdb_surfaceRaised;     // placeholders behind images
-@property (class, nonatomic, readonly) UIColor *mdb_accent;            // #FFD130
-@property (class, nonatomic, readonly) UIColor *mdb_onAccent;          // text on top of the accent
+@property (class, nonatomic, readonly) UIColor *mdb_background;     // #25272A
+@property (class, nonatomic, readonly) UIColor *mdb_surface;        // #202123, bars and sheets
+@property (class, nonatomic, readonly) UIColor *mdb_surfaceRaised;  // placeholders behind images
+@property (class, nonatomic, readonly) UIColor *mdb_accent;         // #FFD130
+@property (class, nonatomic, readonly) UIColor *mdb_onAccent;       // text on top of the accent
 @property (class, nonatomic, readonly) UIColor *mdb_textPrimary;
 @property (class, nonatomic, readonly) UIColor *mdb_textSecondary;
 @property (class, nonatomic, readonly) UIColor *mdb_textTertiary;
@@ -41,10 +41,10 @@ NS_ASSUME_NONNULL_BEGIN
 /// Navigation bar, tab bar and other UIAppearance defaults. Call once at launch.
 + (void)applyGlobalAppearance;
 /// A label already set up for Dynamic Type.
-+ (UILabel *)labelWithSize:(CGFloat)size
-                    weight:(UIFontWeight)weight
-                 textStyle:(UIFontTextStyle)textStyle
-                     color:(UIColor *)color;
++ (UILabel *)labelWithSize:(CGFloat)size weight:(UIFontWeight)weight textStyle:(UIFontTextStyle)textStyle color:(UIColor *)color;
+
+/// Bold 17 pt section title, marked as a header for VoiceOver.
++ (UILabel *)sectionTitleLabel:(NSString *)title;
 
 - (instancetype)init NS_UNAVAILABLE;
 

@@ -41,11 +41,22 @@ The Xcode project and workspace are generated, so they are not in git. Run `xcod
 ## Tests
 
 ```sh
-xcodebuild test -workspace MovieDB.xcworkspace -scheme MovieDB \
-  -destination 'platform=iOS Simulator,name=iPhone 16'
+./Scripts/ci-test.sh          # newest iOS runtime
+./Scripts/ci-test.sh --all    # one iPhone for every installed iOS runtime
+./Scripts/format.sh --check   # the same style check CI runs
 ```
 
-The tests cover JSON parsing, request building, the API client with a stubbed URL protocol, view model states, the Core Data store and memory leaks in the view models. They never call the real TMDB API.
+83 tests cover the observables, JSON parsing, endpoints, the API client with a stubbed URL protocol, paging, every view model, the Core Data store, coordinator navigation and leaks in every screen. They never call the real TMDB API.
+
+## TestFlight
+
+The bundle id is `com.adamappstudio.moviedb`. To ship a build:
+
+1. Sign in to Xcode with the Apple ID of the team in `project.yml` (Settings > Accounts).
+2. Make sure `Configs/Secrets.xcconfig` has a token. The script refuses to archive without one.
+3. Run `./Scripts/release-testflight.sh`. It bumps the build number in `project.yml`, archives a Release build and uploads it with `Scripts/ExportOptions.plist`.
+
+Commit the build number change afterwards. `--no-upload` archives and exports without uploading.
 
 ## Project layout
 
@@ -53,14 +64,14 @@ The tests cover JSON parsing, request building, the API client with a stubbed UR
 MovieDB/
   App/            launch, scene, dependency container, Info.plist, assets
   Coordinators/   navigation, one coordinator per tab plus shared movie flows
-  Core/           networking, Core Data, logging, signposts, MetricKit, debug tools
+  Core/           observables, networking, Core Data, logging, signposts, MetricKit, debug tools
   Models/         immutable models parsed from TMDB JSON
-  Services/       MDBMovieService, favorites store protocol, preferences
+  Services/       service protocols, TMDB endpoints and service, pager, favorites store protocol, preferences
   UIComponents/   cells and reusable views
   Features/       one folder per screen with its view controller and view model
 MovieDBTests/     XCTest with JSON fixtures
 Configs/          xcconfig files, Secrets.example.xcconfig
-Scripts/          bootstrap, secret check, git hooks, LLDB helpers
+Scripts/          bootstrap, tests, format, release, secret check, git hooks, LLDB helpers
 docs/             architecture, debugging, secrets, contributing
 ```
 

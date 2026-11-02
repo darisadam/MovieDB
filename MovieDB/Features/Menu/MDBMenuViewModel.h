@@ -5,35 +5,30 @@
 
 #import <Foundation/Foundation.h>
 #import "MDBFavoritesStore.h"
-#import "MDBLoadState.h"
 #import "MDBMovieService.h"
 
 @class MDBGenre;
-@class MDBPreferences;
+@class MDBObservable<ObjectType>;
 @class MDBPreferenceOption;
+@class MDBPreferences;
+@class MDBPreferenceSnapshot;
+@class MDBScreenState<ContentType>;
 
 NS_ASSUME_NONNULL_BEGIN
 
 @interface MDBMenuViewModel : NSObject
 
-@property (nonatomic, readonly) MDBLoadState genresState;
-@property (nonatomic, readonly, nullable) NSError *genresError;
-@property (nonatomic, copy, readonly) NSArray<MDBGenre *> *genres;
+@property (nonatomic, readonly) MDBObservable<MDBScreenState<NSArray<MDBGenre *> *> *> *genresState;
+@property (nonatomic, readonly) MDBObservable<MDBPreferenceSnapshot *> *preferences;
+/// NSNumber with the number of saved favorites.
+@property (nonatomic, readonly) MDBObservable<NSNumber *> *favoritesCount;
 
-@property (nonatomic, readonly) NSString *regionTitle;
-@property (nonatomic, readonly) NSString *regionCode;
-@property (nonatomic, readonly) NSString *languageTitle;
-@property (nonatomic, readonly) NSString *languageCode;
 @property (nonatomic, readonly) NSArray<MDBPreferenceOption *> *regionOptions;
 @property (nonatomic, readonly) NSArray<MDBPreferenceOption *> *languageOptions;
-@property (nonatomic, readonly) NSUInteger favoritesCount;
 
-@property (nonatomic, copy, nullable) void (^onChange)(void);
-
-- (instancetype)initWithMovieService:(id<MDBMovieService>)movieService
-                         preferences:(MDBPreferences *)preferences
-                      favoritesStore:(id<MDBFavoritesStore>)favoritesStore
-                  notificationCenter:(NSNotificationCenter *)notificationCenter NS_DESIGNATED_INITIALIZER;
+- (instancetype)initWithGenreProvider:(id<MDBGenreProviding>)genreProvider
+                          preferences:(MDBPreferences *)preferences
+                       favoritesStore:(id<MDBFavoritesStore>)favoritesStore NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
 - (void)loadIfNeeded;

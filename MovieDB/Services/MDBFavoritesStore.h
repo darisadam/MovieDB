@@ -6,11 +6,9 @@
 #import <Foundation/Foundation.h>
 
 @class MDBMovie;
+@class MDBObservable<ObjectType>;
 
 NS_ASSUME_NONNULL_BEGIN
-
-/// Posted on the main queue after any add or remove.
-FOUNDATION_EXPORT NSNotificationName const MDBFavoritesDidChangeNotification;
 
 /// Snapshot of a saved favorite. Safe to pass around, it isn't tied to a managed object context.
 @interface MDBFavoriteMovie : NSObject
@@ -42,11 +40,10 @@ typedef void (^MDBFavoritesCompletion)(NSError *_Nullable error);
 
 @protocol MDBFavoritesStore <NSObject>
 
-/// Newest first. Main thread only.
-- (NSArray<MDBFavoriteMovie *> *)allFavorites;
-/// Main thread only.
+/// Every favorite, newest first. Replays on subscribe and emits on the main queue after each change.
+@property (nonatomic, readonly) MDBObservable<NSArray<MDBFavoriteMovie *> *> *favorites;
+
 - (BOOL)isFavoriteMovieID:(NSInteger)movieID;
-- (NSUInteger)favoritesCount;
 
 - (void)addFavoriteMovie:(MDBMovie *)movie
               genreNames:(NSArray<NSString *> *)genreNames

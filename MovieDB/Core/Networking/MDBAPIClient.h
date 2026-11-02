@@ -29,16 +29,13 @@ typedef void (^MDBAPICompletion)(id _Nullable result, NSError *_Nullable error);
 /// Debug switch to test offline states without touching the device settings.
 @property (atomic) BOOL simulatesOffline;
 
-- (instancetype)initWithConfiguration:(MDBTMDBConfiguration *)configuration
-                          activityLog:(MDBNetworkActivityLog *)activityLog;
+- (instancetype)initWithConfiguration:(MDBTMDBConfiguration *)configuration activityLog:(MDBNetworkActivityLog *)activityLog;
 - (instancetype)initWithConfiguration:(MDBTMDBConfiguration *)configuration
                  sessionConfiguration:(NSURLSessionConfiguration *)sessionConfiguration
                           activityLog:(MDBNetworkActivityLog *)activityLog NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
-- (id<MDBCancellable>)GET:(MDBEndpoint *)endpoint
-                   parser:(MDBAPIParser)parser
-               completion:(MDBAPICompletion)completion;
+- (id<MDBCancellable>)GET:(MDBEndpoint *)endpoint parser:(MDBAPIParser)parser completion:(MDBAPICompletion)completion;
 
 @end
 

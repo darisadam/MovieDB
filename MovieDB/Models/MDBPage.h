@@ -16,8 +16,7 @@ NS_ASSUME_NONNULL_BEGIN
 @property (nonatomic, readonly) BOOL hasMore;
 
 /// Nil when the JSON isn't a paged response.
-- (nullable instancetype)initWithJSON:(NSDictionary *)JSON
-                           itemParser:(NSArray * (^)(NSArray *items))itemParser;
+- (nullable instancetype)initWithJSON:(NSDictionary *)JSON itemParser:(NSArray * (^)(NSArray *items))itemParser;
 
 - (instancetype)initWithPage:(NSInteger)page
                   totalPages:(NSInteger)totalPages
