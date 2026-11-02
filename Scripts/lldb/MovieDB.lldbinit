@@ -1,0 +1,27 @@
+# MovieDB LLDB helpers.
+# Xcode loads this file for the MovieDB scheme (Run > Info > LLDB Init File), set in project.yml.
+# Pause the app (or hit a breakpoint) and type any of these in the debug console.
+
+# Screens and navigation
+command alias mdb_vc expression -l objc -O -- (NSString *)[MDBDebugInspector viewControllerTree]
+command alias mdb_coords expression -l objc -O -- (NSString *)[MDBDebugInspector coordinatorTree]
+
+# Network
+command alias mdb_net expression -l objc -O -- (NSString *)[MDBDebugInspector recentRequests]
+command alias mdb_curl expression -l objc -O -- (NSString *)[MDBDebugInspector lastRequestAsCURL]
+command alias mdb_offline_on expression -l objc -- (void)[MDBDebugInspector setOfflineMode:YES]
+command alias mdb_offline_off expression -l objc -- (void)[MDBDebugInspector setOfflineMode:NO]
+
+# Data, config and logs
+command alias mdb_favs expression -l objc -O -- (NSString *)[MDBDebugInspector favorites]
+command alias mdb_config expression -l objc -O -- (NSString *)[MDBDebugInspector configuration]
+command alias mdb_logs expression -l objc -O -- (NSString *)[MDBDebugInspector recentLogs]
+# 0 debug, 1 info, 2 error, 3 fault. Example: mdb_log_level 2
+command regex mdb_log_level 's/^([0-3])$/expression -l objc -- (void)[MDBDebugInspector setLogLevel:%1]/'
+
+# Stop whenever the app logs a fault through MDBLogFault.
+command alias mdb_break_on_fault breakpoint set --name MDBLogFaultHook
+
+# Redraw the screen after changing views from the console, for example
+#   expression -l objc -- (void)[(UIView *)0x7fa... setBackgroundColor:[UIColor redColor]]
+command alias mdb_flush expression -l objc -- (void)[CATransaction flush]

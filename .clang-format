@@ -1,0 +1,12 @@
+BasedOnStyle: Google
+Language: ObjC
+IndentWidth: 4
+ColumnLimit: 140
+ObjCBlockIndentWidth: 4
+ObjCSpaceAfterProperty: true
+ObjCSpaceBeforeProtocolList: true
+AllowShortFunctionsOnASingleLine: Empty
+AllowShortIfStatementsOnASingleLine: Never
+AllowShortBlocksOnASingleLine: Never
+PointerAlignment: Right
+SortIncludes: true

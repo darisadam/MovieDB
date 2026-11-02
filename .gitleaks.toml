@@ -1,0 +1,24 @@
+title = "MovieDB gitleaks config"
+
+[extend]
+useDefault = true
+
+[[rules]]
+id = "tmdb-v3-api-key"
+description = "TMDB v3 API key"
+regex = '''(?i)(api_key|apiKey)\s*[=:]\s*["']?([0-9a-f]{32})'''
+secretGroup = 2
+keywords = ["api_key", "apikey"]
+
+[[rules]]
+id = "tmdb-v4-access-token"
+description = "TMDB v4 read access token"
+regex = '''eyJhbGciOiJIUzI1NiJ9\.[A-Za-z0-9_-]{20,}\.[A-Za-z0-9_-]{20,}'''
+keywords = ["eyjhbgcioijiuzi1nij9"]
+
+[allowlist]
+description = "Example and fixture files"
+paths = [
+  '''Configs/Secrets\.example\.xcconfig''',
+  '''MovieDBTests/Fixtures/.*\.json''',
+]
