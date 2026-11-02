@@ -1,0 +1,99 @@
+# XcodeGen spec. Run `xcodegen` (or Scripts/bootstrap.sh) to create MovieDB.xcodeproj.
+name: MovieDB
+
+options:
+  bundleIdPrefix: com.darisadam
+  deploymentTarget:
+    iOS: "15.0"
+  developmentLanguage: en
+  createIntermediateGroups: true
+  groupSortPosition: top
+  indentWidth: 4
+  tabWidth: 4
+  usesTabs: false
+
+configs:
+  Debug: debug
+  Release: release
+
+configFiles:
+  Debug: Configs/Debug.xcconfig
+  Release: Configs/Release.xcconfig
+
+settings:
+  base:
+    MARKETING_VERSION: "1.0.0"
+    CURRENT_PROJECT_VERSION: "1"
+
+targets:
+  MovieDB:
+    type: application
+    platform: iOS
+    sources:
+      - path: MovieDB
+        excludes:
+          - "**/.DS_Store"
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.darisadam.MovieDB
+        PRODUCT_NAME: MovieDB
+        INFOPLIST_FILE: MovieDB/App/Info.plist
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+        ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME: AccentColor
+        TARGETED_DEVICE_FAMILY: "1"
+        GCC_TREAT_WARNINGS_AS_ERRORS: YES
+        CLANG_ENABLE_OBJC_ARC: YES
+        HEADER_SEARCH_PATHS: $(inherited)
+    preBuildScripts:
+      - name: Check secrets file
+        basedOnDependencyAnalysis: false
+        script: |
+          if [ ! -f "${SRCROOT}/Configs/Secrets.xcconfig" ]; then
+            echo "warning: Configs/Secrets.xcconfig is missing. Run Scripts/bootstrap.sh and add your TMDB token."
+          fi
+
+  MovieDBTests:
+    type: bundle.unit-test
+    platform: iOS
+    sources:
+      - path: MovieDBTests
+    dependencies:
+      - target: MovieDB
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.darisadam.MovieDBTests
+        # XCTest itself needs iOS 17, the app target stays at 15.
+        IPHONEOS_DEPLOYMENT_TARGET: "17.0"
+        GENERATE_INFOPLIST_FILE: YES
+        TEST_HOST: $(BUILT_PRODUCTS_DIR)/MovieDB.app/MovieDB
+        BUNDLE_LOADER: $(TEST_HOST)
+        HEADER_SEARCH_PATHS: $(inherited) "$(SRCROOT)/MovieDB/**"
+        GCC_TREAT_WARNINGS_AS_ERRORS: YES
+
+schemes:
+  MovieDB:
+    build:
+      targets:
+        MovieDB: all
+        MovieDBTests: [test]
+    run:
+      config: Debug
+      customLLDBInit: ${SRCROOT}/Scripts/lldb/MovieDB.lldbinit
+      enableAddressSanitizer: true
+      disableMainThreadChecker: false
+      stopOnEveryMainThreadCheckerIssue: true
+      environmentVariables:
+        OS_ACTIVITY_DT_MODE: "YES"
+    test:
+      config: Debug
+      gatherCoverageData: true
+      coverageTargets:
+        - MovieDB
+      targets:
+        - MovieDBTests
+    profile:
+      config: Release
+    analyze:
+      config: Debug
+    archive:
+      config: Release
