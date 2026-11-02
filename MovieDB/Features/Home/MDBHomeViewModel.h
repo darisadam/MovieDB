@@ -4,11 +4,13 @@
 //
 
 #import <Foundation/Foundation.h>
-#import "MDBLoadState.h"
 #import "MDBMovieService.h"
 
-@class MDBMovieCellModel;
 @class MDBImageURLBuilder;
+@class MDBMovieCellModel;
+@class MDBObservable<ObjectType>;
+@class MDBPreferenceSnapshot;
+@class MDBScreenState<ContentType>;
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -23,19 +25,27 @@ NS_ASSUME_NONNULL_BEGIN
 
 @end
 
-@interface MDBHomeViewModel : NSObject
+@interface MDBHomeContent : NSObject
 
-@property (nonatomic, readonly) MDBLoadState state;
-@property (nonatomic, readonly, nullable) NSError *error;
 @property (nonatomic, copy, readonly) NSArray<MDBMovieCellModel *> *carouselItems;
 @property (nonatomic, copy, readonly) NSArray<MDBHomeSection *> *sections;
 
-/// Called on the main queue whenever anything above changes.
-@property (nonatomic, copy, nullable) void (^onChange)(void);
+- (instancetype)initWithCarouselItems:(NSArray<MDBMovieCellModel *> *)carouselItems
+                             sections:(NSArray<MDBHomeSection *> *)sections NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_UNAVAILABLE;
 
-- (instancetype)initWithMovieService:(id<MDBMovieService>)movieService
-                           imageURLs:(MDBImageURLBuilder *)imageURLs
-                  notificationCenter:(NSNotificationCenter *)notificationCenter NS_DESIGNATED_INITIALIZER;
+@end
+
+typedef id<MDBMovieListProviding, MDBGenreProviding> MDBHomeServices;
+
+@interface MDBHomeViewModel : NSObject
+
+@property (nonatomic, readonly) MDBObservable<MDBScreenState<MDBHomeContent *> *> *state;
+
+/// Reloads by itself when the region or language changes.
+- (instancetype)initWithServices:(MDBHomeServices)services
+                       imageURLs:(MDBImageURLBuilder *)imageURLs
+                     preferences:(MDBObservable<MDBPreferenceSnapshot *> *)preferences NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
 /// Loads once. Later calls do nothing unless the last load failed.
