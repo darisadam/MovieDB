@@ -12,8 +12,8 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface MDBCoreDataFavoritesStore : NSObject <MDBFavoritesStore>
 
-- (instancetype)initWithStack:(MDBCoreDataStack *)stack
-           notificationCenter:(NSNotificationCenter *)notificationCenter NS_DESIGNATED_INITIALIZER;
+/// Reads the saved favorites right away, so create it on the main thread.
+- (instancetype)initWithStack:(MDBCoreDataStack *)stack NS_DESIGNATED_INITIALIZER;
 - (instancetype)init NS_UNAVAILABLE;
 
 @end

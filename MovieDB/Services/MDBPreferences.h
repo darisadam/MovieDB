@@ -2,15 +2,14 @@
 //  MDBPreferences.h
 //  MovieDB
 //
-//  Region and language choices from the Menu tab. They are sent to TMDB as the
-//  region and language query items.
+//  Region and language from the Menu tab. They go to TMDB as the region and language query items.
 //
 
 #import <Foundation/Foundation.h>
 
-NS_ASSUME_NONNULL_BEGIN
+@class MDBObservable<ObjectType>;
 
-FOUNDATION_EXPORT NSNotificationName const MDBPreferencesDidChangeNotification;
+NS_ASSUME_NONNULL_BEGIN
 
 @interface MDBPreferenceOption : NSObject
 
@@ -22,22 +21,32 @@ FOUNDATION_EXPORT NSNotificationName const MDBPreferencesDidChangeNotification;
 
 @end
 
+/// The current choice, published whenever it changes.
+@interface MDBPreferenceSnapshot : NSObject
+
+@property (nonatomic, readonly) MDBPreferenceOption *language;
+@property (nonatomic, readonly) MDBPreferenceOption *region;
+
+- (instancetype)initWithLanguage:(MDBPreferenceOption *)language region:(MDBPreferenceOption *)region NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_UNAVAILABLE;
+
+@end
+
 @interface MDBPreferences : NSObject
 
 @property (class, nonatomic, readonly) NSArray<MDBPreferenceOption *> *languageOptions;
 @property (class, nonatomic, readonly) NSArray<MDBPreferenceOption *> *regionOptions;
 
-/// "en-US" style code.
+/// "en-US" style code. Unknown codes are ignored.
 @property (nonatomic, copy) NSString *languageCode;
-/// Two letter country code, "ID" for example.
+/// Two letter country code, "ID" for example. Unknown codes are ignored.
 @property (nonatomic, copy) NSString *regionCode;
 
-- (instancetype)initWithUserDefaults:(NSUserDefaults *)userDefaults
-                  notificationCenter:(NSNotificationCenter *)notificationCenter NS_DESIGNATED_INITIALIZER;
-- (instancetype)init NS_UNAVAILABLE;
+/// Replays the current snapshot and emits again after every change.
+@property (nonatomic, readonly) MDBObservable<MDBPreferenceSnapshot *> *current;
 
-- (NSString *)languageTitle;
-- (NSString *)regionTitle;
+- (instancetype)initWithUserDefaults:(NSUserDefaults *)userDefaults NS_DESIGNATED_INITIALIZER;
+- (instancetype)init NS_UNAVAILABLE;
 
 @end
 

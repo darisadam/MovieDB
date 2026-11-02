@@ -11,16 +11,9 @@ FOUNDATION_EXPORT NSErrorDomain const MDBAPIErrorDomain;
 /// NSNumber with the HTTP status code, when there was a response.
 FOUNDATION_EXPORT NSString *const MDBAPIErrorStatusCodeKey;
 
-typedef NS_ERROR_ENUM(MDBAPIErrorDomain, MDBAPIErrorCode) {
-    MDBAPIErrorMissingToken = 1,
-    MDBAPIErrorInvalidRequest,
-    MDBAPIErrorOffline,
-    MDBAPIErrorTransport,
-    MDBAPIErrorUnauthorized,
-    MDBAPIErrorNotFound,
-    MDBAPIErrorHTTPStatus,
-    MDBAPIErrorDecoding,
-    MDBAPIErrorCancelled,
+typedef NS_ERROR_ENUM(MDBAPIErrorDomain, MDBAPIErrorCode){
+    MDBAPIErrorMissingToken = 1, MDBAPIErrorInvalidRequest, MDBAPIErrorOffline,  MDBAPIErrorTransport, MDBAPIErrorUnauthorized,
+    MDBAPIErrorNotFound,         MDBAPIErrorHTTPStatus,     MDBAPIErrorDecoding, MDBAPIErrorCancelled,
 };
 
 @interface NSError (MDBAPIError)
