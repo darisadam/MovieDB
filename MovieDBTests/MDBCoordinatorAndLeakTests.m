@@ -45,14 +45,16 @@
 - (void)setUp {
   [super setUp];
   self.suiteName = [NSString stringWithFormat:@"MovieDBTests.%@", [NSUUID UUID].UUIDString];
-  MDBTMDBConfiguration *configuration = [[MDBTMDBConfiguration alloc] initWithAccessToken:@""
-                                                                               apiBaseURL:MDBTestURL(@"https://api.themoviedb.org/3/")
-                                                                             imageBaseURL:MDBTestURL(@"https://image.tmdb.org/t/p/")];
-  self.dependencies = [[MDBAppDependencies alloc] initWithConfiguration:configuration
-                                                            userDefaults:MDBTestDefaults(self.suiteName)
-                                                           coreDataStack:[[MDBCoreDataStack alloc] initWithStoreType:MDBCoreDataStoreTypeInMemory]];
+  MDBTMDBConfiguration *configuration =
+      [[MDBTMDBConfiguration alloc] initWithAccessToken:@"" apiBaseURL:MDBTestURL(@"https://api.themoviedb.org/3/")
+                                           imageBaseURL:MDBTestURL(@"https://image.tmdb.org/t/p/")];
+  self.dependencies = [[MDBAppDependencies alloc]
+      initWithConfiguration:configuration
+               userDefaults:MDBTestDefaults(self.suiteName)
+              coreDataStack:[[MDBCoreDataStack alloc] initWithStoreType:MDBCoreDataStoreTypeInMemory]];
   self.navigationController = [[UINavigationController alloc] init];
-  self.coordinator = [[MDBMovieFlowCoordinator alloc] initWithNavigationController:self.navigationController dependencies:self.dependencies];
+  self.coordinator = [[MDBMovieFlowCoordinator alloc] initWithNavigationController:self.navigationController
+                                                                      dependencies:self.dependencies];
 }
 
 - (void)tearDown {
@@ -61,7 +63,8 @@
 }
 
 - (MDBMovieCellModel *)cellModel {
-  return [MDBMovieCellModel modelsWithMovies:@[ MDBTestMovie(7, @"Seven") ] genreNames:nil imageURLs:self.dependencies.imageURLs].firstObject;
+  return [MDBMovieCellModel modelsWithMovies:@[ MDBTestMovie(7, @"Seven") ] genreNames:nil imageURLs:self.dependencies.imageURLs]
+      .firstObject;
 }
 
 #pragma mark - Navigation
@@ -126,49 +129,39 @@
     return [[MDBHomeViewController alloc] initWithViewModel:[[MDBHomeViewModel alloc] initWithServices:deps.movieService
                                                                                              imageURLs:deps.imageURLs
                                                                                            preferences:deps.preferences.current]];
-  }
-                  name:@"Home"];
+  } name:@"Home"];
   [self assertReleased:^UIViewController * {
-    MDBExploreViewModel *viewModel = [[MDBExploreViewModel alloc] initWithServices:deps.movieService
-                                                                         imageURLs:deps.imageURLs
+    MDBExploreViewModel *viewModel = [[MDBExploreViewModel alloc] initWithServices:deps.movieService imageURLs:deps.imageURLs
                                                                        preferences:deps.preferences.current
                                                                   debounceInterval:0.01];
     return [[MDBExploreViewController alloc] initWithViewModel:viewModel];
-  }
-                  name:@"Explore"];
+  } name:@"Explore"];
   [self assertReleased:^UIViewController * {
     return [[MDBFavoritesViewController alloc]
         initWithViewModel:[[MDBFavoritesViewModel alloc] initWithFavoritesStore:deps.favoritesStore imageURLs:deps.imageURLs]];
-  }
-                  name:@"Favorites"];
+  } name:@"Favorites"];
   [self assertReleased:^UIViewController * {
     return [[MDBMenuViewController alloc] initWithViewModel:[[MDBMenuViewModel alloc] initWithGenreProvider:deps.movieService
                                                                                                 preferences:deps.preferences
                                                                                              favoritesStore:deps.favoritesStore]];
-  }
-                  name:@"Menu"];
+  } name:@"Menu"];
   [self assertReleased:^UIViewController * {
-    MDBMovieDetailViewModel *viewModel = [[MDBMovieDetailViewModel alloc] initWithMovieID:movie.movieID
-                                                                                seedMovie:movie.movie
+    MDBMovieDetailViewModel *viewModel = [[MDBMovieDetailViewModel alloc] initWithMovieID:movie.movieID seedMovie:movie.movie
                                                                                  services:deps.movieService
                                                                            favoritesStore:deps.favoritesStore
                                                                                 imageURLs:deps.imageURLs];
     return [[MDBMovieDetailViewController alloc] initWithViewModel:viewModel];
-  }
-                  name:@"Movie Detail"];
+  } name:@"Movie Detail"];
   [self assertReleased:^UIViewController * {
-    return [[MDBPersonViewController alloc] initWithViewModel:[[MDBPersonViewModel alloc] initWithPersonID:1
-                                                                                                      name:@"Someone"
+    return [[MDBPersonViewController alloc] initWithViewModel:[[MDBPersonViewModel alloc] initWithPersonID:1 name:@"Someone"
                                                                                                   services:deps.movieService
                                                                                                  imageURLs:deps.imageURLs]];
-  }
-                  name:@"Person"];
+  } name:@"Person"];
   [self assertReleased:^UIViewController * {
-    return [[MDBMovieListViewController alloc] initWithViewModel:[[MDBMovieListViewModel alloc] initWithListKind:MDBMovieListKindPopular
-                                                                                                        services:deps.movieService
-                                                                                                       imageURLs:deps.imageURLs]];
-  }
-                  name:@"Movie List"];
+    return [[MDBMovieListViewController alloc]
+        initWithViewModel:[[MDBMovieListViewModel alloc] initWithListKind:MDBMovieListKindPopular services:deps.movieService
+                                                                imageURLs:deps.imageURLs]];
+  } name:@"Movie List"];
 }
 
 @end

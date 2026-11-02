@@ -71,7 +71,8 @@
 
 - (void)testCellModelFormatsMovieText {
   MDBMovie *movie = MDBTestMovie(1, @"Green Book");
-  MDBMovieCellModel *model = [MDBMovieCellModel modelsWithMovies:@[ movie ] genreNames:@{@28 : @"Action"} imageURLs:[self imageURLs]].firstObject;
+  MDBMovieCellModel *model =
+      [MDBMovieCellModel modelsWithMovies:@[ movie ] genreNames:@{@28 : @"Action"} imageURLs:[self imageURLs]].firstObject;
   XCTAssertEqualObjects(model.title, @"Green Book");
   XCTAssertEqualObjects(model.yearText, @"2017");
   XCTAssertEqualObjects(model.metaText, @"2017 · Action");
@@ -83,11 +84,7 @@
 }
 
 - (void)testCellModelWithoutVotesHasNoRating {
-  MDBMovie *movie = [[MDBMovie alloc] initWithMovieID:2
-                                                title:@"Coming Soon"
-                                             overview:nil
-                                           posterPath:nil
-                                         backdropPath:nil
+  MDBMovie *movie = [[MDBMovie alloc] initWithMovieID:2 title:@"Coming Soon" overview:nil posterPath:nil backdropPath:nil
                                           releaseDate:nil
                                           voteAverage:0
                                             voteCount:0
@@ -101,10 +98,7 @@
 }
 
 - (void)testCellModelFromFavoriteKeepsGenres {
-  MDBFavoriteMovie *favorite = [[MDBFavoriteMovie alloc] initWithMovieID:9
-                                                                   title:@"Coco"
-                                                                overview:nil
-                                                              posterPath:@"/coco.jpg"
+  MDBFavoriteMovie *favorite = [[MDBFavoriteMovie alloc] initWithMovieID:9 title:@"Coco" overview:nil posterPath:@"/coco.jpg"
                                                              releaseDate:nil
                                                              voteAverage:8.2
                                                                voteCount:1
