@@ -1,0 +1,52 @@
+{
+  "page": 1,
+  "total_pages": 3,
+  "total_results": 57,
+  "results": [
+    {
+      "id": 490132,
+      "title": "Green Book",
+      "overview": "A working-class bouncer drives a classical pianist on a concert tour.",
+      "poster_path": "/7BsvSuDQuoqhWmU2fL7W2GOcZHU.jpg",
+      "backdrop_path": "/78PjwaykLY2QqhMfWRDvmfbC6EV.jpg",
+      "release_date": "2018-11-16",
+      "vote_average": 8.2,
+      "vote_count": 12034,
+      "popularity": 41.2,
+      "genre_ids": [18, 35, 36]
+    },
+    {
+      "id": 381288,
+      "title": "Split",
+      "overview": "Three girls are taken by a man with many identities.",
+      "poster_path": "/lli31lYTFpvxVBeFHWoe5PMfW5s.jpg",
+      "backdrop_path": null,
+      "release_date": "2016-09-26",
+      "vote_average": 7.3,
+      "vote_count": 17000,
+      "popularity": 30.1,
+      "genre_ids": [27, 53]
+    },
+    {
+      "id": 490132,
+      "title": "Green Book",
+      "release_date": "2018-11-16",
+      "vote_average": 8.2,
+      "vote_count": 12034
+    },
+    {
+      "id": 1,
+      "title": "",
+      "release_date": "not a date"
+    },
+    {
+      "id": 99999,
+      "title": "Upcoming Thing",
+      "release_date": "",
+      "vote_average": 0,
+      "vote_count": 0,
+      "genre_ids": "not an array"
+    },
+    "garbage entry"
+  ]
+}

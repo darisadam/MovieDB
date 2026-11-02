@@ -1,0 +1,19 @@
+{
+  "id": 10980,
+  "name": "Daniel Radcliffe",
+  "biography": "English actor best known for playing Harry Potter.",
+  "birthday": "1989-07-23",
+  "deathday": null,
+  "place_of_birth": "London, England, UK",
+  "known_for_department": "Acting",
+  "profile_path": "/iPg0J9UzAlPj1fLEJNllpW9IhGe.jpg",
+  "movie_credits": {
+    "cast": [
+      {"id": 673, "title": "Harry Potter and the Prisoner of Azkaban", "character": "Harry Potter", "release_date": "2004-05-31", "vote_count": 21000, "vote_average": 8.0},
+      {"id": 291805, "title": "Now You See Me 2", "character": "Walter Mabry", "release_date": "2016-06-02", "vote_count": 11000, "vote_average": 6.8},
+      {"id": 347031, "title": "Swiss Army Man", "character": "Manny", "release_date": "2016-06-24", "vote_count": 4100, "vote_average": 6.8},
+      {"id": 9999001, "title": "Untitled Project", "character": "", "release_date": "", "vote_count": 0},
+      {"id": 673, "title": "Harry Potter and the Prisoner of Azkaban", "character": "Harry Potter", "release_date": "2004-05-31", "vote_count": 21000}
+    ]
+  }
+}
