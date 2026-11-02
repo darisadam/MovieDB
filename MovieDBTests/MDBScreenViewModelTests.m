@@ -43,8 +43,7 @@
 #pragma mark - Movie detail
 
 - (MDBMovieDetailViewModel *)detailViewModel {
-  return [[MDBMovieDetailViewModel alloc] initWithMovieID:291805
-                                                seedMovie:MDBTestMovie(291805, @"Seed Title")
+  return [[MDBMovieDetailViewModel alloc] initWithMovieID:291805 seedMovie:MDBTestMovie(291805, @"Seed Title")
                                                  services:self.service
                                            favoritesStore:self.favorites
                                                 imageURLs:self.imageURLs];
@@ -107,7 +106,8 @@
 
 - (void)testPersonContentIncludesAgeAndFilmography {
   self.service.person = [[MDBPerson alloc] initWithJSON:MDBLoadFixture(@"person")];
-  MDBPersonViewModel *viewModel = [[MDBPersonViewModel alloc] initWithPersonID:10980 name:@"Daniel" services:self.service imageURLs:self.imageURLs];
+  MDBPersonViewModel *viewModel = [[MDBPersonViewModel alloc] initWithPersonID:10980 name:@"Daniel" services:self.service
+                                                                     imageURLs:self.imageURLs];
   viewModel.now = (NSDate *_Nonnull)[MDBFormatting dateFromTMDBString:@"2026-11-02"];
   XCTAssertEqualObjects(viewModel.state.value.content.name, @"Daniel", @"Placeholder uses the name we were opened with");
 
@@ -130,7 +130,8 @@
 - (void)testListLoadsAndSortsGenreResults {
   self.service.listPages = @{@(MDBMovieListKindPopular) : [MDBStubMovieService pageWithTitles:@[ @"A", @"B" ]]};
   MDBGenre *action = [[MDBGenre alloc] initWithGenreID:28 name:@"Action"];
-  MDBMovieListViewModel *viewModel = [[MDBMovieListViewModel alloc] initWithGenre:action services:self.service imageURLs:self.imageURLs];
+  MDBMovieListViewModel *viewModel = [[MDBMovieListViewModel alloc] initWithGenre:action services:self.service
+                                                                        imageURLs:self.imageURLs];
   XCTAssertEqualObjects(viewModel.title, @"Action");
   XCTAssertTrue(viewModel.showsSortOptions);
 
@@ -164,7 +165,8 @@
 #pragma mark - Favorites
 
 - (void)testFavoritesFollowTheStore {
-  MDBFavoritesViewModel *viewModel = [[MDBFavoritesViewModel alloc] initWithFavoritesStore:self.favorites imageURLs:self.imageURLs];
+  MDBFavoritesViewModel *viewModel = [[MDBFavoritesViewModel alloc] initWithFavoritesStore:self.favorites
+                                                                                 imageURLs:self.imageURLs];
   XCTAssertEqual(viewModel.state.value.phase, MDBLoadStateEmpty);
 
   [self.favorites addFavoriteMovie:MDBTestMovie(1, @"Saved") genreNames:@[ @"Drama" ] completion:nil];
@@ -188,9 +190,8 @@
   NSString *suite = [NSString stringWithFormat:@"MovieDBTests.%@", [NSUUID UUID].UUIDString];
   NSUserDefaults *defaults = [[NSUserDefaults alloc] initWithSuiteName:suite];
   MDBPreferences *preferences = [[MDBPreferences alloc] initWithUserDefaults:defaults];
-  MDBMenuViewModel *viewModel = [[MDBMenuViewModel alloc] initWithGenreProvider:self.service
-                                                                   preferences:preferences
-                                                                favoritesStore:self.favorites];
+  MDBMenuViewModel *viewModel = [[MDBMenuViewModel alloc] initWithGenreProvider:self.service preferences:preferences
+                                                                 favoritesStore:self.favorites];
   [viewModel loadIfNeeded];
   XCTAssertTrue(MDBWaitUntil(^BOOL {
     return viewModel.genresState.value.phase == MDBLoadStateLoaded;
@@ -202,8 +203,8 @@
   [viewModel selectLanguageCode:@"ko-KR"];
   XCTAssertEqualObjects(viewModel.preferences.value.language.code, @"ko-KR");
   XCTAssertTrue(MDBWaitUntil(^BOOL {
-    return viewModel.genresState.value.phase == MDBLoadStateLoaded;
-  }), @"A language change reloads the genre names");
+                  return viewModel.genresState.value.phase == MDBLoadStateLoaded;
+                }), @"A language change reloads the genre names");
 
   XCTAssertEqual(viewModel.favoritesCount.value.integerValue, 0);
   [self.favorites addFavoriteMovie:MDBTestMovie(1, @"Saved") genreNames:@[] completion:nil];

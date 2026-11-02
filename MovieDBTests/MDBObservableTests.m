@@ -99,11 +99,9 @@
   MDBSubject<NSNumber *> *left = [[MDBSubject alloc] init];
   MDBSubject<NSNumber *> *right = [[MDBSubject alloc] initWithValue:@10];
   NSMutableArray *received = [NSMutableArray array];
-  MDBObservable *sum = [MDBObservable combineLatest:left
-                                               with:right
-                                             reduce:^id(NSNumber *a, NSNumber *b) {
-                                               return @(a.integerValue + b.integerValue);
-                                             }];
+  MDBObservable *sum = [MDBObservable combineLatest:left with:right reduce:^id(NSNumber *a, NSNumber *b) {
+    return @(a.integerValue + b.integerValue);
+  }];
   id<MDBDisposable> subscription = [sum subscribe:^(id value) {
     [received addObject:value];
   }];
