@@ -9,8 +9,6 @@
 NSString *const MDBLogSubsystem = @"com.adamappstudio.moviedb";
 
 enum { MDBLogCategoryCount = 6 };
-static const NSUInteger MDBLogRecentLimit = 300;
-
 #if DEBUG
 static atomic_long MDBLogLevelThreshold = MDBLogLevelDebug;
 #else
@@ -38,6 +36,10 @@ MDBLogLevel MDBLogMinimumLevel(void) {
   return (MDBLogLevel)atomic_load(&MDBLogLevelThreshold);
 }
 
+// The in-memory log buffer only backs the Debug menu, so Release builds leave it out.
+#if DEBUG
+static const NSUInteger MDBLogRecentLimit = 300;
+
 static dispatch_queue_t MDBLogRecentQueue(void) {
   static dispatch_queue_t queue;
   static dispatch_once_t onceToken;
@@ -55,6 +57,7 @@ static NSMutableArray<NSString *> *MDBLogRecentStorage(void) {
   });
   return storage;
 }
+#endif
 
 static NSString *MDBLogLevelTag(MDBLogLevel level) {
   switch (level) {
